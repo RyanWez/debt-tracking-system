@@ -8,12 +8,12 @@ document.getElementById('add-debt-form').addEventListener('submit', (e) => {
     const amount = parseInt(amountValue, 10);
 
     if (!customerId) {
-        showToast('ဖောက်သည်ကို အရင်ရွေးပါ၊ ပြီးမှ ကြွေးမှတ်နိုင်ပါတယ်။', 'warning');
+        showToast('ဖောက်သည်ကို အရင်ရွေးပါ၊ ပြီးမှ အကြွေးမှတ်နိုင်ပါတယ်။', 'warning');
         return;
     }
 
     if (!item) {
-        showToast('ဘာပစ္စည်းကြွေးထားတယ်ဆိုတာ မှတ်စုထည့်ပါ။', 'warning');
+        showToast('ဘာပစ္စည်း အကြွေးထားတယ်ဆိုတာ မှတ်စုထည့်ပါ။', 'warning');
         return;
     }
 
@@ -37,7 +37,7 @@ document.getElementById('add-debt-form').addEventListener('submit', (e) => {
     resetCustomDropdowns();
     renderRecentDebts(document.getElementById('debt-search') ? document.getElementById('debt-search').value : '');
     updateDashboard();
-    showToast('ကြွေးစာရင်း သိမ်းပြီးပါပြီ!', 'success');
+    showToast('အကြွေးစာရင်း သိမ်းပြီးပါပြီ!', 'success');
 });
 
 document.getElementById('debt-search').addEventListener('input', (e) => {
@@ -78,7 +78,7 @@ document.getElementById('edit-debt-form').addEventListener('submit', (e) => {
     closeEditDebtModal();
     renderRecentDebts(document.getElementById('debt-search').value || '');
     updateDashboard();
-    showToast('ကြွေးစာရင်း ပြင်ဆင်ပြီးပါပြီ!', 'success');
+    showToast('အကြွေးစာရင်း ပြင်ဆင်ပြီးပါပြီ!', 'success');
 });
 
 function openDebtDeleteModal(debtId) {
@@ -110,7 +110,7 @@ function confirmDeleteDebt() {
     closeDeleteDebtModal();
     renderRecentDebts(document.getElementById('debt-search').value || '');
     updateDashboard();
-    showToast('ကြွေးမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
+    showToast('အကြွေးမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
     currentDebtId = null;
 }
 

@@ -7,6 +7,12 @@ function updateSettingsView() {
 
 // Backup Data Function
 function backupData() {
+    // Check if there's any data to backup
+    if (customers.length === 0 && debts.length === 0 && payments.length === 0) {
+        showToast('Backup လုပ်ဖို့ Data တစ်ခုမှ မရှိသေးပါ! အရင်ဆုံး Data ထည့်ပါ။', 'error', 4000);
+        return;
+    }
+
     try {
         const backupData = {
             customers: customers,
@@ -51,6 +57,8 @@ function backupData() {
 }
 
 // Restore Data Function
+let pendingRestoreData = null;
+
 document.getElementById('restore-file').addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -81,31 +89,12 @@ document.getElementById('restore-file').addEventListener('change', (e) => {
                 return;
             }
 
-            // Show backup info
-            const backupDate = data.backupDate ? new Date(data.backupDate).toLocaleString('en-GB') : 'Unknown';
-            const message = `Backup ရက်စွဲ: ${backupDate}\n\nဖောက်သည်: ${data.customers.length}\nကြွေးမှတ်တမ်း: ${data.debts.length}\nငွေရှင်းမှတ်တမ်း: ${data.payments.length}\n\nလက်ရှိ ဒေတာအားလုံး ပျောက်သွားမှာပါ။ ဆက်လုပ်မလား?`;
+            // Store the data temporarily
+            pendingRestoreData = data;
 
-            // Confirm before restoring
-            if (confirm(message)) {
-                customers = data.customers;
-                debts = data.debts;
-                payments = data.payments;
-                
-                saveData();
-                updateSettingsView();
-                updateDashboard();
-                
-                showToast('Restore လုပ်ပြီးပါပြီ! ဒေတာများ ပြန်လည်ရယူပြီးပါပြီ။', 'success');
-                
-                // Refresh current view
-                const activeNav = document.querySelector('.nav-btn.active');
-                if (activeNav) {
-                    const viewName = activeNav.id.replace('nav-', '');
-                    if (viewName !== 'settings') {
-                        showView(viewName);
-                    }
-                }
-            }
+            // Show custom restore modal with backup info
+            showRestoreModal(data);
+            
         } catch (error) {
             showToast('Backup ဖိုင်ကို ဖတ်လို့ မရပါ! JSON ပုံစံ မမှန်ပါ။', 'error');
             console.error('Restore error:', error);
@@ -119,3 +108,63 @@ document.getElementById('restore-file').addEventListener('change', (e) => {
     reader.readAsText(file);
     e.target.value = ''; // Reset input
 });
+
+// Show Restore Modal
+function showRestoreModal(data) {
+    // Format backup date
+    const backupDate = data.backupDate ? 
+        new Date(data.backupDate).toLocaleString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        }) : 'Unknown';
+
+    // Update modal content
+    document.getElementById('restore-backup-date').textContent = backupDate;
+    document.getElementById('restore-customers-count').textContent = data.customers.length;
+    document.getElementById('restore-debts-count').textContent = data.debts.length;
+    document.getElementById('restore-payments-count').textContent = data.payments.length;
+
+    // Show modal
+    document.getElementById('restore-modal').classList.remove('hidden');
+}
+
+// Close Restore Modal
+function closeRestoreModal() {
+    document.getElementById('restore-modal').classList.add('hidden');
+    pendingRestoreData = null;
+}
+
+// Confirm Restore
+function confirmRestore() {
+    if (!pendingRestoreData) return;
+
+    try {
+        customers = pendingRestoreData.customers;
+        debts = pendingRestoreData.debts;
+        payments = pendingRestoreData.payments;
+        
+        saveData();
+        updateSettingsView();
+        updateDashboard();
+        
+        closeRestoreModal();
+        
+        showToast('Restore လုပ်ပြီးပါပြီ! ဒေတာများ ပြန်လည်ရယူပြီးပါပြီ။', 'success');
+        
+        // Refresh current view
+        const activeNav = document.querySelector('.nav-btn.active');
+        if (activeNav) {
+            const viewName = activeNav.id.replace('nav-', '');
+            if (viewName !== 'settings') {
+                showView(viewName);
+            }
+        }
+    } catch (error) {
+        showToast('Restore လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
+        console.error('Restore error:', error);
+    }
+}

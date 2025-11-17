@@ -465,6 +465,60 @@
         </div>
     </div>
 
+    <!-- Restore Confirmation Modal -->
+    <div id="restore-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 overflow-y-auto modal-backdrop">
+        <div class="max-w-md mx-auto mt-10 mb-10">
+            <div class="brutalist-card gradient-blue p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">🌐</div>
+                    <h2 class="text-xl font-black mb-2">Backup Data ကို Restore လုပ်မလား?</h2>
+                </div>
+                
+                <!-- Backup Info -->
+                <div class="brutalist-card bg-white p-4 mb-4">
+                    <div class="text-sm font-bold mb-3 border-b-2 border-black pb-2">📋 Backup အချက်အလက်</div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="font-bold">📅 Backup ရက်စွဲ:</span>
+                            <span class="font-black" id="restore-backup-date">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold">👥 ဖောက်သည်:</span>
+                            <span class="font-black text-blue-600" id="restore-customers-count">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold">📝 ကြွေးမှတ်တမ်း:</span>
+                            <span class="font-black text-red-600" id="restore-debts-count">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold">💰 ငွေရှင်းမှတ်တမ်း:</span>
+                            <span class="font-black text-green-600" id="restore-payments-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warning -->
+                <div class="brutalist-card bg-yellow-100 border-4 border-yellow-600 p-4 mb-4">
+                    <div class="flex gap-3">
+                        <div class="text-2xl">⚠️</div>
+                        <div>
+                            <p class="font-black text-sm mb-1">သတိပြုရန်!</p>
+                            <p class="text-xs font-bold text-gray-700">
+                                လက်ရှိ ဒေတာအားလုံး ပျောက်သွားပြီး backup မှ ဒေတာများနဲ့ အစားထိုးမှာပါ။ ဆက်လုပ်မလား?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-2">
+                    <button onclick="confirmRestore()" class="brutalist-btn bg-green-600 text-white w-full py-3">✅ OK</button>
+                    <button onclick="closeRestoreModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="scripts/utils.js"></script>
     <script src="scripts/storage.js"></script>
     <script src="scripts/customers.js"></script>
