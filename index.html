@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Debt Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles/fonts.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/brutalist.css">
+    <link rel="stylesheet" href="styles/gradients.css">
+    <link rel="stylesheet" href="styles/scrollbar.css">
+    <link rel="stylesheet" href="styles/toast.css">
+    <link rel="stylesheet" href="styles/dropdown.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body class="bg-white min-h-screen">
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- App Container -->
+    <div id="app" class="max-w-md mx-auto min-h-screen bg-white">
+        
+        <!-- Top Sticky Area: Header + Nav -->
+        <div class="sticky top-0 z-40 bg-white pt-4 pb-2">
+            <!-- Header -->
+            <header class="gradient-yellow p-4 brutalist-card mb-3">
+                <h1 class="text-2xl font-black text-center animate-bounce-once">🧾 Debt Tracking System</h1>
+                <p class="text-center text-xs font-bold mt-1">ကြွေးစာရင်း မှတ်တမ်း</p>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="p-4 pt-0">
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="showView('dashboard')" class="nav-btn active py-2 text-xs" id="nav-dashboard">
+                        📊<br>ပင်မစာမျက်နှာ
+                    </button>
+                    <button onclick="showView('customers')" class="nav-btn py-2 text-xs" id="nav-customers">
+                        👥<br>ဖောက်သည်များ
+                    </button>
+                    <button onclick="showView('debts')" class="nav-btn py-2 text-xs" id="nav-debts">
+                        📝<br>ကြွေးမှတ်ရန်
+                    </button>
+                    <button onclick="showView('payments')" class="nav-btn py-2 text-xs" id="nav-payments">
+                        💰<br>ငွေရှင်းရန်
+                    </button>
+                    <button onclick="showView('settings')" class="nav-btn py-2 text-xs" id="nav-settings">
+                        ⚙️<br>Settings
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <main class="p-4 pb-24 pt-4">
+            
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view-content">
+                <!-- Metrics Cards -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="brutalist-card gradient-red p-4 metric-card animate-slideInUp">
+                        <div class="text-xs font-bold mb-1">📉 ကြွေးကျန်စုစုပေါင်း</div>
+                        <div class="text-2xl font-black" id="total-debt">0 Ks</div>
+                    </div>
+                    <div class="brutalist-card gradient-green p-4 metric-card animate-slideInUp" style="animation-delay: 0.1s">
+                        <div class="text-xs font-bold mb-1">💵 ဒီနေ့ရငွေ</div>
+                        <div class="text-2xl font-black" id="today-payment">0 Ks</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="brutalist-card gradient-blue p-4 metric-card animate-slideInUp" style="animation-delay: 0.2s">
+                        <div class="text-xs font-bold mb-1">👥 ဖောက်သည် ဦးရေ</div>
+                        <div class="text-2xl font-black" id="total-customers">0</div>
+                    </div>
+                    <div class="brutalist-card gradient-purple p-4 metric-card animate-slideInUp" style="animation-delay: 0.3s">
+                        <div class="text-xs font-bold mb-1">📅 လစဉ်အကြွေး</div>
+                        <div class="text-2xl font-black" id="month-debt">0 Ks</div>
+                    </div>
+                </div>
+
+                <!-- Top Debtors -->
+                <div class="brutalist-card gradient-orange p-4 mb-6 animate-slideInUp" style="animation-delay: 0.4s">
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">📈 အကြွေးအများဆုံး ဖောက်သည်များ</h2>
+                    <div id="top-debtors" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Today's Transactions -->
+                <div class="brutalist-card bg-white p-4">
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">🕐 ဒီနေ့ငွေရှင်းစာရင်း</h2>
+                    <div id="today-transactions" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers View -->
+            <div id="view-customers" class="view-content hidden">
+                <!-- Add Customer Form -->
+                <div class="brutalist-card gradient-yellow p-4 mb-6 animate-slideInUp">
+                    <h2 class="text-lg font-black mb-3">➕ ဖောက်သည် အသစ်ထည့်မယ်</h2>
+                    <form id="add-customer-form" class="space-y-3">
+                        <input type="text" id="customer-name" placeholder="အမည် (ထည့်ရန်လို)" 
+                            class="brutalist-input w-full p-3" required>
+                        <input type="tel" id="customer-phone" placeholder="ဖုန်းနံပါတ် (ရှိလျှင်ထည့်ပါ)" 
+                            class="brutalist-input w-full p-3">
+                        <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
+                            သိမ်းမယ်
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Search -->
+                <div class="mb-4">
+                    <input type="text" id="customer-search" placeholder="🔍 နာမည်နဲ့ရှာပါ..." 
+                        class="brutalist-input w-full p-3">
+                </div>
+
+                <!-- Customer List -->
+                <div id="customer-list" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Debts View -->
+            <div id="view-debts" class="view-content hidden">
+                <!-- Add Debt Form -->
+                <div class="brutalist-card gradient-pink p-4 mb-6 animate-slideInUp">
+                    <h2 class="text-lg font-black mb-3">📝 ကြွေးအသစ်မှတ်မယ်</h2>
+                    <form id="add-debt-form" class="space-y-3">
+                        <div class="custom-dropdown" id="debt-customer-dropdown">
+                            <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty" id="debt-customer-btn">
+                                <span id="debt-customer-text">ဖောက်သည်ရွေးပါ</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div class="custom-dropdown-panel" id="debt-customer-panel">
+                                <div class="custom-dropdown-search">
+                                    <input type="text" id="debt-customer-search" 
+                                        placeholder="🔍 ရှာရန်..." 
+                                        class="w-full p-2 border-2 border-black font-bold"
+                                        autocomplete="off">
+                                </div>
+                                <div class="custom-dropdown-list" id="debt-customer-list">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="debt-customer" required>
+                        <input type="text" id="debt-item" placeholder="မှတ်စုထည့်ပါ (ဥပမာ - မုန့် 2ထုပ် + ရေ 2ဗူး)" 
+                            class="brutalist-input w-full p-3" required>
+                        <input type="number" id="debt-amount" placeholder="ပမာဏ ထည့်ပါ" 
+                            class="brutalist-input w-full p-3" min="0" required>
+                        <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
+                            သိမ်းမယ်
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Recent Debts -->
+                <div class="brutalist-card bg-white p-4">
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">📋 နောက်ဆုံးကြွေးမှတ်တမ်းများ</h2>
+                    <!-- Debt Search -->
+                    <div class="mb-4">
+                        <input type="text" id="debt-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..." 
+                            class="brutalist-input w-full p-3">
+                    </div>
+                    <div id="recent-debts" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payments View -->
+            <div id="view-payments" class="view-content hidden">
+                <!-- Add Payment Form -->
+                <div class="brutalist-card gradient-teal p-4 mb-6 animate-slideInUp">
+                    <h2 class="text-lg font-black mb-3">💰 ငွေရှင်းတာမှတ်မယ်</h2>
+                    <form id="add-payment-form" class="space-y-3">
+                        <div class="custom-dropdown" id="payment-customer-dropdown">
+                            <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty" id="payment-customer-btn">
+                                <span id="payment-customer-text">ဖောက်သည်ရွေးပါ</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div class="custom-dropdown-panel" id="payment-customer-panel">
+                                <div class="custom-dropdown-search">
+                                    <input type="text" id="payment-customer-search" 
+                                        placeholder="🔍 ရှာရန်..." 
+                                        class="w-full p-2 border-2 border-black font-bold"
+                                        autocomplete="off">
+                                </div>
+                                <div class="custom-dropdown-list" id="payment-customer-list">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="payment-customer" required>
+                        <div class="brutalist-card bg-white p-3" id="customer-debt-info">
+                            <span class="font-bold">ပေးရန်ကျန်ငွေ: </span>
+                            <span class="text-xl font-black text-red-600" id="remaining-debt">0 Ks</span>
+                        </div>
+                        <input type="number" id="payment-amount" placeholder="ပေးမယ့်ပမာဏ" 
+                            class="brutalist-input w-full p-3" min="0" required>
+                        <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
+                            သိမ်းမယ်
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Recent Payments -->
+                <div class="brutalist-card bg-white p-4">
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">💵 နောက်ဆုံးငွေရှင်းစာရင်း</h2>
+                    <!-- Payment Search -->
+                    <div class="mb-4">
+                        <input type="text" id="payment-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..." 
+                            class="brutalist-input w-full p-3">
+                    </div>
+                    <div id="recent-payments" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="view-settings" class="view-content hidden">
+                <!-- Backup & Restore Card -->
+                <div class="brutalist-card gradient-purple p-6 mb-6 animate-slideInUp">
+                    <div class="text-center mb-6">
+                        <div class="text-6xl mb-3">💾</div>
+                        <h2 class="text-2xl font-black mb-2">Backup & Restore</h2>
+                        <p class="font-bold text-sm text-gray-700">ဒေတာများ သိမ်းဆည်းခြင်း နှင့် ပြန်လည်ရယူခြင်း</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Backup Section -->
+                        <div class="brutalist-card bg-white p-4">
+                            <h3 class="font-black text-lg mb-2 flex items-center gap-2">
+                                📥 Backup Data
+                            </h3>
+                            <p class="text-sm font-bold text-gray-600 mb-3">
+                                လက်ရှိ ဒေတာအားလုံးကို JSON ဖိုင်အဖြစ် ဒေါင်းလုဒ်လုပ်ပါ။
+                            </p>
+                            <button onclick="backupData()" class="brutalist-btn bg-blue-500 text-white w-full py-3">
+                                💾 Backup လုပ်မယ်
+                            </button>
+                        </div>
+
+                        <!-- Restore Section -->
+                        <div class="brutalist-card bg-white p-4">
+                            <h3 class="font-black text-lg mb-2 flex items-center gap-2">
+                                📤 Restore Data
+                            </h3>
+                            <p class="text-sm font-bold text-gray-600 mb-3">
+                                Backup လုပ်ထားသော ဖိုင်မှ ဒေတာများကို ပြန်လည်ရယူပါ။
+                            </p>
+                            <input type="file" id="restore-file" accept=".json" class="hidden">
+                            <button onclick="document.getElementById('restore-file').click()" class="brutalist-btn bg-green-500 text-white w-full py-3">
+                                📂 Restore လုပ်မယ်
+                            </button>
+                        </div>
+
+                        <!-- Warning Notice -->
+                        <div class="brutalist-card bg-yellow-100 p-4 border-4 border-yellow-600">
+                            <div class="flex gap-3">
+                                <div class="text-2xl">⚠️</div>
+                                <div>
+                                    <p class="font-black text-sm mb-1">သတိပြုရန်</p>
+                                    <p class="text-xs font-bold text-gray-700">
+                                        Restore လုပ်ရင် လက်ရှိ ဒေတာအားလုံး ပျောက်သွားပြီး backup မှ ဒေတာများနဲ့ အစားထိုးမှာ ဖြစ်ပါတယ်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Info -->
+                <div class="brutalist-card bg-white p-4">
+                    <h3 class="font-black text-lg mb-3 border-b-3 border-black pb-2">📊 ဒေတာအချက်အလက်</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between p-3 bg-blue-50 border-2 border-black">
+                            <span class="font-bold">👥 ဖောက်သည်ဦးရေ</span>
+                            <span class="font-black" id="settings-customers-count">0</span>
+                        </div>
+                        <div class="flex justify-between p-3 bg-red-50 border-2 border-black">
+                            <span class="font-bold">📝 ကြွေးမှတ်တမ်း</span>
+                            <span class="font-black" id="settings-debts-count">0</span>
+                        </div>
+                        <div class="flex justify-between p-3 bg-green-50 border-2 border-black">
+                            <span class="font-bold">💰 ငွေရှင်းမှတ်တမ်း</span>
+                            <span class="font-black" id="settings-payments-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Customer Detail Modal -->
+    <div id="customer-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 p-4 overflow-y-auto modal-backdrop">
+        <div class="max-w-md mx-auto mt-10 mb-10">
+            <div class="brutalist-card bg-white p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-black" id="modal-customer-name"></h2>
+                        <p class="font-bold" id="modal-customer-phone"></p>
+                    </div>
+                    <div class="flex gap-2 items-start">
+                        <button onclick="editCustomer()" class="brutalist-btn bg-blue-400 text-white px-3 py-2 text-xs">✏️ Edit</button>
+                        <button onclick="deleteCustomer()" class="brutalist-btn bg-red-400 text-white px-3 py-2 text-xs">🗑️ Del</button>
+                        <button onclick="closeModal()" class="brutalist-btn bg-gray-400 text-white px-3 py-2 text-xs">✕</button>
+                    </div>
+                </div>
+                <div class="brutalist-card bg-red-100 p-4 mb-4">
+                    <div class="text-sm font-bold mb-1">စုစုပေါင်းကြွေးကျန်</div>
+                    <div class="text-3xl font-black text-red-600" id="modal-total-debt">0 Ks</div>
+                </div>
+                <div class="mb-4">
+                    <h3 class="font-black mb-2 text-lg border-b-3 border-black pb-2">အကြွေးယူမှုစာရင်း</h3>
+                    <div id="modal-debts" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar"></div>
+                </div>
+                <div>
+                    <h3 class="font-black mb-2 text-lg border-b-3 border-black pb-2">ငွေရှင်းမှတ်တမ်း</h3>
+                    <div id="modal-payments" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Customer Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-blue p-6">
+                <h2 class="text-xl font-black mb-4 text-center">✏️ ဖောက်သည် အချက်အလက်ပြင်ဆင်ရန်</h2>
+                <form id="edit-customer-form" class="space-y-3">
+                    <input type="hidden" id="edit-customer-id">
+                    <div>
+                        <label class="font-bold text-sm block mb-1">အမည်</label>
+                        <input type="text" id="edit-customer-name" class="brutalist-input w-full p-3" required>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ဖုန်းနံပါတ်</label>
+                        <input type="tel" id="edit-customer-phone" class="brutalist-input w-full p-3">
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅ သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">သတိပေးချက်!</h2>
+                    <p class="font-bold text-sm">ဒီဖောက်သည်ကို ဖျက်ပစ်မှာ သေချာပါသလား?</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4">
+                    <div class="font-black" id="delete-customer-name"></div>
+                    <div class="font-bold text-sm text-gray-600" id="delete-customer-phone"></div>
+                </div>
+                <div class="bg-yellow-100 border-3 border-black p-3 mb-4">
+                    <p class="text-xs font-bold text-center">⚠️ ဖောက်သည်ကို ဖျက်လိုက်ရင် သူနဲ့ ပတ်သက်တဲ့ ကြွေးစာရင်းတွေ၊ ငွေရှင်းမှတ်တမ်းတွေ အားလုံး ပျောက်သွားမှာပါ!</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDelete()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️ ဖျက်ပစ်မယ်</button>
+                    <button onclick="closeDeleteModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Debt Modal -->
+    <div id="edit-debt-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-pink p-6">
+                <h2 class="text-xl font-black mb-4 text-center">✏️ ကြွေးစာရင်း ပြင်မယ်</h2>
+                <form id="edit-debt-form" class="space-y-3">
+                    <input type="hidden" id="edit-debt-id">
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ဖောက်သည်</label>
+                        <div class="brutalist-card bg-white p-3" id="edit-debt-customer-name"></div>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">မှတ်စု</label>
+                        <input type="text" id="edit-debt-item" class="brutalist-input w-full p-3" required>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ပမာဏ (Ks)</label>
+                        <input type="number" id="edit-debt-amount" class="brutalist-input w-full p-3" min="0" required>
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅ သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditDebtModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Debt Modal -->
+    <div id="delete-debt-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">သတိပေးချက်</h2>
+                    <p class="font-bold text-sm">ဒီအကြွေးမှတ်တမ်းကို ဖျက်မှာ သေချာလား?</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4" id="delete-debt-summary"></div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDeleteDebt()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️ ဖျက်မယ်</button>
+                    <button onclick="closeDeleteDebtModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Payment Modal -->
+    <div id="edit-payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-teal p-6">
+                <h2 class="text-xl font-black mb-4 text-center">✏️ ငွေရှင်းစာရင်း ပြင်မယ်</h2>
+                <form id="edit-payment-form" class="space-y-3">
+                    <input type="hidden" id="edit-payment-id">
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ဖောက်သည်</label>
+                        <div class="brutalist-card bg-white p-3" id="edit-payment-customer-name"></div>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ပမာဏ (Ks)</label>
+                        <input type="number" id="edit-payment-amount" class="brutalist-input w-full p-3" min="0" required>
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅ သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditPaymentModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Payment Modal -->
+    <div id="delete-payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">ငွေရှင်းမှတ်တမ်း ဖျက်မလား?</h2>
+                    <p class="font-bold text-sm">ဒီငွေရှင်းမှတ်တမ်းကို ဖျက်မလား သေချာအောင် စဉ်းစားကြည့်ပါ။</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4" id="delete-payment-summary"></div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDeletePayment()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️ ဖျက်မယ်</button>
+                    <button onclick="closeDeletePaymentModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/customers.js"></script>
+    <script src="scripts/debts.js"></script>
+    <script src="scripts/payments.js"></script>
+    <script src="scripts/dashboard.js"></script>
+    <script src="scripts/modals.js"></script>
+    <script src="scripts/dropdown.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+<

@@ -1,0 +1,158 @@
+// Debt Functions
+document.getElementById('add-debt-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const customerId = document.getElementById('debt-customer').value;
+    const item = document.getElementById('debt-item').value.trim();
+    const amountValue = document.getElementById('debt-amount').value;
+    const amount = parseInt(amountValue, 10);
+
+    if (!customerId) {
+        showToast('ဖောက်သည်ကို အရင်ရွေးပါ၊ ပြီးမှ ကြွေးမှတ်နိုင်ပါတယ်။', 'warning');
+        return;
+    }
+
+    if (!item) {
+        showToast('ဘာပစ္စည်းကြွေးထားတယ်ဆိုတာ မှတ်စုထည့်ပါ။', 'warning');
+        return;
+    }
+
+    if (isNaN(amount) || amount <= 0) {
+        showToast('ပမာဏကို မှန်ကန်အောင် ထည့်ပေးပါ။', 'warning');
+        return;
+    }
+    
+    const debt = {
+        id: generateId(),
+        customerId,
+        item,
+        total: amount,
+        createdAt: new Date().toISOString()
+    };
+
+    debts.push(debt);
+    saveData();
+    
+    e.target.reset();
+    resetCustomDropdowns();
+    renderRecentDebts(document.getElementById('debt-search') ? document.getElementById('debt-search').value : '');
+    updateDashboard();
+    showToast('ကြွေးစာရင်း သိမ်းပြီးပါပြီ!', 'success');
+});
+
+document.getElementById('debt-search').addEventListener('input', (e) => {
+    renderRecentDebts(e.target.value);
+});
+
+let currentDebtId = null;
+
+function openDebtEditModal(debtId) {
+    const debt = debts.find(d => d.id === debtId);
+    if (!debt) return;
+
+    currentDebtId = debtId;
+    const customer = customers.find(c => c.id === debt.customerId);
+    document.getElementById('edit-debt-id').value = debt.id;
+    document.getElementById('edit-debt-customer-name').textContent = customer ? customer.name : 'Unknown';
+    document.getElementById('edit-debt-item').value = debt.item;
+    document.getElementById('edit-debt-amount').value = debt.total;
+
+    document.getElementById('edit-debt-modal').classList.remove('hidden');
+}
+
+function closeEditDebtModal() {
+    document.getElementById('edit-debt-modal').classList.add('hidden');
+    currentDebtId = null;
+}
+
+document.getElementById('edit-debt-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const debtId = document.getElementById('edit-debt-id').value;
+    const index = debts.findIndex(d => d.id === debtId);
+    if (index === -1) return;
+
+    debts[index].item = document.getElementById('edit-debt-item').value;
+    debts[index].total = parseInt(document.getElementById('edit-debt-amount').value) || 0;
+
+    saveData();
+    closeEditDebtModal();
+    renderRecentDebts(document.getElementById('debt-search').value || '');
+    updateDashboard();
+    showToast('ကြွေးစာရင်း ပြင်ဆင်ပြီးပါပြီ!', 'success');
+});
+
+function openDebtDeleteModal(debtId) {
+    const debt = debts.find(d => d.id === debtId);
+    if (!debt) return;
+
+    currentDebtId = debtId;
+    const customer = customers.find(c => c.id === debt.customerId);
+    const summaryEl = document.getElementById('delete-debt-summary');
+    summaryEl.innerHTML = `
+        <div class="font-black mb-1">${customer ? customer.name : 'Unknown'}</div>
+        <div class="font-bold text-sm mb-1">${debt.item}</div>
+        <div class="font-black text-red-600 mb-1">${formatCurrency(debt.total)}</div>
+        <div class="text-xs text-gray-600">${formatDate(debt.createdAt)}</div>
+    `;
+
+    document.getElementById('delete-debt-modal').classList.remove('hidden');
+}
+
+function closeDeleteDebtModal() {
+    document.getElementById('delete-debt-modal').classList.add('hidden');
+    currentDebtId = null;
+}
+
+function confirmDeleteDebt() {
+    if (!currentDebtId) return;
+    debts = debts.filter(d => d.id !== currentDebtId);
+    saveData();
+    closeDeleteDebtModal();
+    renderRecentDebts(document.getElementById('debt-search').value || '');
+    updateDashboard();
+    showToast('ကြွေးမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
+    currentDebtId = null;
+}
+
+function renderRecentDebts(searchTerm = '') {
+    const list = document.getElementById('recent-debts');
+
+    let filteredDebts = debts.slice().sort((a, b) =>
+        new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    if (searchTerm) {
+        filteredDebts = filteredDebts.filter(debt => {
+            const customer = customers.find(c => c.id === debt.customerId);
+            const name = customer ? customer.name.toLowerCase() : '';
+            return name.includes(searchTerm.toLowerCase());
+        });
+    }
+
+    if (filteredDebts.length === 0) {
+        list.innerHTML = '<div class="text-center p-8 text-gray-500 font-bold">စာရင်းမရှိသေးပါ</div>';
+        return;
+    }
+
+    list.innerHTML = filteredDebts.map(debt => {
+        const customer = customers.find(c => c.id === debt.customerId);
+        return `
+            <div class="debt-item bg-red-50 p-4 border-3 border-black">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <div class="font-black">${customer ? customer.name : 'Unknown'}</div>
+                        <div class="text-xs text-gray-600 mt-1">${formatDate(debt.createdAt)}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xl font-black text-red-600">${formatCurrency(debt.total)}</div>
+                    </div>
+                </div>
+                <div class="font-bold text-sm mb-2">${debt.item}</div>
+                <div class="flex justify-end gap-2 text-xs font-bold">
+                    <button class="brutalist-btn bg-blue-500 text-white px-3 py-1" onclick="openDebtEditModal('${debt.id}')">Edit</button>
+                    <button class="brutalist-btn bg-red-500 text-white px-3 py-1" onclick="openDebtDeleteModal('${debt.id}')">Del</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}

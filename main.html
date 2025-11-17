@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Debt Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', 'Myanmar3', 'Pyidaungsu', sans-serif;
+        }
+
+        /* Smooth Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .animate-slideInUp {
+            animation: slideInUp 0.5s ease-out forwards;
+        }
+
+        .animate-slideInRight {
+            animation: slideInRight 0.4s ease-out forwards;
+        }
+
+        .animate-pulse-once {
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        .animate-bounce-once {
+            animation: bounce 0.5s ease-in-out;
+        }
+
+        /* Neo-Brutalist Styles with Smooth Transitions */
+        .brutalist-card {
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0px #000;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color-light) 100%);
+        }
+
+        .brutalist-card:hover {
+            box-shadow: 10px 10px 0px #000;
+        }
+
+        .brutalist-card:active {
+            box-shadow: 5px 5px 0px #000;
+            transform: translate(2px, 2px);
+        }
+
+        .brutalist-btn {
+            border: 3px solid #000;
+            box-shadow: 5px 5px 0px #000;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 900;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brutalist-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .brutalist-btn:hover::before {
+            left: 100%;
+        }
+
+        .brutalist-btn:hover {
+            box-shadow: 7px 7px 0px #000;
+        }
+
+        .brutalist-btn:active {
+            box-shadow: 2px 2px 0px #000;
+            transform: translate(2px, 2px);
+        }
+
+        .brutalist-input {
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            font-weight: 700;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .brutalist-input:focus {
+            outline: none;
+            box-shadow: 6px 6px 0px #000;
+            transform: translate(-2px, -2px);
+            border-color: #4F46E5;
+        }
+
+        .nav-btn {
+            border: 3px solid #000;
+            font-weight: 900;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 5px 5px 0px #000;
+            background-color: #fff;
+        }
+
+        .nav-btn:hover {
+            background: #FEF08A;
+            box-shadow: 7px 7px 0px #000;
+        }
+
+        .nav-btn:active {
+            background: #FDE047;
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #FDE047 0%, #FACC15 100%);
+            box-shadow: 5px 5px 0px #000;
+        }
+
+        .nav-btn.active:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 6px 6px 0px #000;
+        }
+
+        .debt-item {
+            border-left: 6px solid #000;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .debt-item:hover {
+            transform: translateX(3px);
+            border-left-color: #EF4444;
+            background-color: #FEF2F2;
+        }
+
+        .payment-item {
+            border-left: 6px solid #10B981;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .payment-item:hover {
+            transform: translateX(3px);
+            border-left-color: #059669;
+            background-color: #F0FDF4;
+        }
+
+        /* Beautiful Color Gradients */
+        .gradient-red {
+            background: linear-gradient(135deg, #FCA5A5 0%, #F87171 100%);
+        }
+
+        .gradient-green {
+            background: linear-gradient(135deg, #86EFAC 0%, #4ADE80 100%);
+        }
+
+        .gradient-blue {
+            background: linear-gradient(135deg, #93C5FD 0%, #60A5FA 100%);
+        }
+
+        .gradient-purple {
+            background: linear-gradient(135deg, #C4B5FD 0%, #A78BFA 100%);
+        }
+
+        .gradient-yellow {
+            background: linear-gradient(135deg, #FDE68A 0%, #FCD34D 100%);
+        }
+
+        .gradient-pink {
+            background: linear-gradient(135deg, #FBCFE8 0%, #F9A8D4 100%);
+        }
+
+        .gradient-orange {
+            background: linear-gradient(135deg, #FED7AA 0%, #FDBA74 100%);
+        }
+
+        .gradient-teal {
+            background: linear-gradient(135deg, #99F6E4 0%, #5EEAD4 100%);
+        }
+
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #FACC15;
+            border-radius: 4px;
+            border: 1px solid #000;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FDE047;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #FACC15 #f1f1f1;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #000;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success checkmark animation */
+        @keyframes checkmark {
+            0% {
+                stroke-dashoffset: 100;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .checkmark {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: checkmark 0.5s ease-in-out forwards;
+        }
+
+        /* Metric card hover effect */
+        .metric-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        /* Modal backdrop animation */
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Stagger animation for lists */
+        .stagger-item {
+            opacity: 0;
+            animation: slideInRight 0.4s ease-out forwards;
+        }
+
+        .stagger-item:nth-child(1) { animation-delay: 0.05s; }
+        .stagger-item:nth-child(2) { animation-delay: 0.1s; }
+        .stagger-item:nth-child(3) { animation-delay: 0.15s; }
+        .stagger-item:nth-child(4) { animation-delay: 0.2s; }
+        .stagger-item:nth-child(5) { animation-delay: 0.25s; }
+
+        /* Custom Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .toast {
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0px #000;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            font-weight: 800;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastSlideOut {
+            to {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        .toast.toast-out {
+            animation: toastSlideOut 0.3s ease-in forwards;
+        }
+
+        .toast-success {
+            background: linear-gradient(135deg, #86EFAC 0%, #4ADE80 100%);
+        }
+
+        .toast-error {
+            background: linear-gradient(135deg, #FCA5A5 0%, #F87171 100%);
+        }
+
+        .toast-warning {
+            background: linear-gradient(135deg, #FDE68A 0%, #FCD34D 100%);
+        }
+
+        .toast-info {
+            background: linear-gradient(135deg, #93C5FD 0%, #60A5FA 100%);
+        }
+
+        .toast-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: #000;
+            animation: toastProgress 3s linear forwards;
+        }
+
+        @keyframes toastProgress {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 640px) {
+            /* Header adjustments */
+            header h1 {
+                font-size: 1.25rem;
+                line-height: 1.5;
+            }
+            
+            header p {
+                font-size: 0.625rem;
+            }
+            
+            /* Navigation */
+            .nav-btn {
+                font-size: 10px;
+                padding: 10px 6px;
+                line-height: 1.4;
+            }
+            
+            /* Sticky header adjustments */
+            .sticky.top-0 {
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+            
+            /* Cards */
+            .brutalist-card {
+                border: 3px solid #000;
+                box-shadow: 4px 4px 0px #000;
+                padding: 12px;
+            }
+            
+            .brutalist-card:hover {
+                box-shadow: 5px 5px 0px #000;
+            }
+            
+            /* Buttons */
+            .brutalist-btn {
+                border: 2px solid #000;
+                box-shadow: 3px 3px 0px #000;
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+            
+            .brutalist-btn:hover {
+                box-shadow: 4px 4px 0px #000;
+            }
+            
+            /* Inputs */
+            .brutalist-input {
+                border: 2px solid #000;
+                box-shadow: 3px 3px 0px #000;
+                font-size: 14px;
+                padding: 8px 10px;
+            }
+            
+            .brutalist-input:focus {
+                box-shadow: 4px 4px 0px #000;
+            }
+            
+            /* Metrics */
+            .metric-card {
+                padding: 10px;
+            }
+            
+            .metric-card .text-2xl {
+                font-size: 1.25rem;
+            }
+            
+            /* Customer cards */
+            .font-black.text-lg {
+                font-size: 1rem;
+            }
+            
+            .font-bold.text-sm {
+                font-size: 0.75rem;
+            }
+            
+            .text-lg.font-black {
+                font-size: 1rem;
+            }
+            
+            /* Debt/Payment items */
+            .debt-item, .payment-item {
+                padding: 8px;
+                border-left-width: 4px;
+            }
+            
+            .text-xl.font-black {
+                font-size: 1.125rem;
+            }
+            
+            /* Toast notifications */
+            .toast-container {
+                width: 95%;
+                top: 80px;
+            }
+            
+            .toast {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+            
+            .toast-icon {
+                font-size: 18px;
+            }
+            
+            /* Modals */
+            .max-w-md.mx-auto {
+                padding: 0 12px;
+            }
+            
+            .text-xl.font-black {
+                font-size: 1.125rem;
+            }
+            
+            .text-3xl.font-black {
+                font-size: 1.5rem;
+            }
+            
+            /* Form elements */
+            .grid.grid-cols-2.gap-3 {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .grid.grid-cols-2.gap-4 {
+                gap: 12px;
+            }
+            
+            /* Spacing adjustments */
+            .space-y-3 > * + * {
+                margin-top: 0.75rem;
+            }
+            
+            .mb-6 {
+                margin-bottom: 1rem;
+            }
+            
+            .mb-4 {
+                margin-bottom: 0.75rem;
+            }
+            
+            .mb-3 {
+                margin-bottom: 0.5rem;
+            }
+            
+            /* Modal adjustments */
+            .mt-10.mb-10 {
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            /* Edit/Delete buttons */
+            .px-3.py-2.text-xs {
+                padding: 4px 6px;
+                font-size: 10px;
+            }
+            
+            /* Delete modal */
+            .text-6xl.mb-3 {
+                font-size: 3rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            /* Lists */
+            .max-h-60 {
+                max-height: 200px;
+            }
+            
+            .space-y-2 > * + * {
+                margin-top: 0.5rem;
+            }
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Touch device improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .brutalist-btn:active {
+                box-shadow: 3px 3px 0px #000;
+                transform: translate(2px, 2px);
+            }
+
+            .brutalist-input:focus {
+                box-shadow: 6px 6px 0px #000;
+            }
+
+            .nav-btn:active {
+                transform: translateY(0);
+                background: #FDE047;
+            }
+        }
+
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .custom-dropdown-button {
+            width: 100%;
+            text-align: left;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+
+        .custom-dropdown-button.empty {
+            color: #6B7280;
+        }
+
+        /* Remove bottom shadow when dropdown is open */
+        .custom-dropdown-button.open {
+            box-shadow: 4px 0px 0px #000, -4px 0px 0px #000, 0px -4px 0px #000 !important;
+            border-bottom: none !important;
+            padding-bottom: calc(0.75rem + 4px);
+        }
+
+        .custom-dropdown-panel {
+            position: absolute;
+            top: calc(100% - 4px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 4px solid #000;
+            border-top: none;
+            box-shadow: 8px 8px 0px #000;
+            z-index: 100;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.2s ease;
+            opacity: 0;
+        }
+
+        .custom-dropdown-panel.open {
+            max-height: 350px;
+            overflow: visible;
+            opacity: 1;
+        }
+
+        .custom-dropdown-search {
+            padding: 12px;
+            border-bottom: 3px solid #000;
+            background: white;
+        }
+
+        .custom-dropdown-search input {
+            border: 2px solid #000 !important;
+            box-shadow: 3px 3px 0px #000 !important;
+            padding: 8px 12px !important;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .custom-dropdown-search input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0px #000 !important;
+            border-color: #4F46E5 !important;
+        }
+
+        .custom-dropdown-list {
+            max-height: 240px;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .custom-dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 2px solid #e5e7eb;
+            transition: all 0.15s ease;
+            font-weight: 700;
+            background: white;
+        }
+
+        .custom-dropdown-item:hover {
+            background: #FEF08A;
+            transform: translateX(4px);
+        }
+
+        .custom-dropdown-item:active {
+            background: #FDE047;
+        }
+
+        .custom-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .custom-dropdown-item.selected {
+            background: #DBEAFE;
+            border-left: 6px solid #3B82F6;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            font-weight: 900;
+            font-size: 16px;
+        }
+
+        .dropdown-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        /* Prevent shadow overlap with next input */
+        .custom-dropdown + input,
+        .custom-dropdown + .grid {
+            margin-top: 12px;
+        }
+
+        @media (max-width: 640px) {
+            .custom-dropdown-panel {
+                border: 3px solid #000;
+                box-shadow: 6px 6px 0px #000;
+            }
+
+            .custom-dropdown-item {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .custom-dropdown-list {
+                max-height: 180px;
+            }
+
+            .custom-dropdown-search input {
+                padding: 6px 10px !important;
+                font-size: 14px;
+            }
+
+            .custom-dropdown + input,
+            .custom-dropdown + .grid {
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen">
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- App Container -->
+    <div id="app" class="max-w-md mx-auto min-h-screen bg-white">
+        
+        <!-- Top Sticky Area: Header + Nav -->
+        <div class="sticky top-0 z-40 bg-white pt-4 pb-2">
+            <!-- Header -->
+            <header class="gradient-yellow p-4 brutalist-card mb-3">
+                <h1 class="text-2xl font-black text-center animate-bounce-once">🧾 Debt Tracking System</h1>
+                <p class="text-center text-xs font-bold mt-1">ကြွေးစာရင်း မှတ်တမ်း</p>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="p-4 pt-0">
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="showView('dashboard')" class="nav-btn active py-2 text-xs" id="nav-dashboard">
+                        📊<br>ပင်မစာမျက်နှာ
+                    </button>
+                    <button onclick="showView('customers')" class="nav-btn py-2 text-xs" id="nav-customers">
+                        👥<br>ဖောက်သည်များ
+                    </button>
+                    <button onclick="showView('debts')" class="nav-btn py-2 text-xs" id="nav-debts">
+                        📝<br>ကြွေးမှတ်ရန်
+                    </button>
+                    <button onclick="showView('payments')" class="nav-btn py-2 text-xs" id="nav-payments">
+                        💰<br>ငွေရှင်းရန်
+                    </button>
+                    <button onclick="showView('settings')" class="nav-btn py-2 text-xs" id="nav-settings">
+                        ⚙️<br>Settings
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <main class="p-4 pb-24 pt-4">
+            
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view-content">
+                <!-- Metrics Cards -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="brutalist-card gradient-red p-4 metric-card animate-slideInUp">
+                        <div class="text-xs font-bold mb-1">📉 ကြွေးကျန်စုစုပေါင်း</div>
+                        <div class="text-2xl font-black" id="total-debt">0 Ks</div>
+                    </div>
+                    <div class="brutalist-card gradient-green p-4 metric-card animate-slideInUp" style="animation-delay: 0.1s">
+                        <div class="text-xs font-bold mb-1">💵 ဒီနေ့ရငွေ</div>
+                        <div class="text-2xl font-black" id="today-payment">0 Ks</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="brutalist-card gradient-blue p-4 metric-card animate-slideInUp" style="animation-delay: 0.2s">
+                        <div class="text-xs font-bold mb-1">👥 ဖောက်သည် ဦးရေ</div>
+                        <div class="text-2xl font-black" id="total-customers">0</div>
+                    </div>
+                    <div class="brutalist-card gradient-purple p-4 metric-card animate-slideInUp" style="animation-delay: 0.3s">
+                        <div class="text-xs font-bold mb-1">📅 လစဉ်အကြွေး</div>
+                        <div class="text-2xl font-black" id="month-debt">0 Ks</div>
+                    </div>
+                </div>
+
+                <!-- Top Debtors -->
+                <div class="brutalist-card gradient-orange p-4 mb-6 animate-slideInUp" style="animation-delay: 0.4s">
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">📈 အကြွေးအများဆုံး ဖောက်သည်များ</h2>
+                    <div id="top-debtors" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Today's Transactions -->
+                <div class="brutalist-card bg-white p-4">
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">🕐 ဒီနေ့ငွေရှင်းစာရင်း</h2>
+                    <div id="today-transactions" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers View -->
+            <div id="view-customers" class="view-content hidden">
+                <!-- Add Customer Form -->
+                <div class="brutalist-card gradient-yellow p-4 mb-6 animate-slideInUp">
+                    <h2 class="text-lg font-black mb-3">➕ ဖောက်သည် အသစ်ထည့်မယ်</h2>
+                    <form id="add-customer-form" class="space-y-3">
+                        <input type="text" id="customer-name" placeholder="အမည် (ထည့်ရန်လို)" 
+                            class="brutalist-input w-full p-3" required>
+                        <input type="tel" id="customer-phone" placeholder="ဖုန်းနံပါတ် (ရှိလျှင်ထည့်ပါ)" 
+                            class="brutalist-input w-full p-3">
+                        <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
+                            သိမ်းမယ်
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Search -->
+                <div class="mb-4">
+                    <input type="text" id="customer-search" placeholder="🔍 နာမည်နဲ့ရှာပါ..." 
+                        class="brutalist-input w-full p-3">
+                </div>
+
+                <!-- Customer List -->
+                <div id="customer-list" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Debts View -->
+            <div id="view-debts" class="view-content hidden">
+                <!-- Add Debt Form -->
+                <div class="brutalist-card gradient-pink p-4 mb-6 animate-slideInUp">
+                    <h2 class="text-lg font-black mb-3">📝 ကြွေးအသစ်မှတ်မယ်</h2>
+                    <form id="add-debt-form" class="space-y-3">
+                        <div class="custom-dropdown" id="debt-customer-dropdown">
+                            <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty" id="debt-customer-btn">
+                                <span id="debt-customer-text">ဖောက်သည်ရွေးပါ</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div class="custom-dropdown-panel" id="debt-customer-panel">
+                                <div class="custom-dropdown-search">
+                                    <input type="text" id="debt-customer-search" 
+                                        placeholder="🔍 ရှာရန်..." 
+                                        class="w-full p-2 border-2 border-black font-bold"
+                                        autocomplete="off">
+                                </div>
+                                <div class="custom-dropdown-list" id="debt-customer-list">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="debt-customer" required>
+                        <input type="text" id="debt-item" placeholder="မှတ်စုထည့်ပါ (ဥပမာ - မုန့် 2ထုပ် + ရေ 2ဗူး)" 
+                            class="brutalist-input w-full p-3" required>
+                        <input type="number" id="debt-amount" placeholder="ပမာဏ ထည့်ပါ" 
+                            class="brutalist-input w-full p-3" min="0" required>
+                        <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
+                            သိမ်းမယ်
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Recent Debts -->
+                <div class="brutalist-card bg-white p-4">
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">📋 နောက်ဆုံးကြွေးမှတ်တမ်းများ</h2>
+                    <!-- Debt Search -->
+                    <div class="mb-4">
+                        <input type="text" id="debt-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..." 
+                            class="brutalist-input w-full p-3">
+                    </div>
+                    <div id="recent-debts" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payments View -->
+            <div id="view-payments" class="view-content hidden">
+                <!-- Add Payment Form -->
+                <div class="brutalist-card gradient-teal p-4 mb-6 animate-slideInUp">
+                    <h2 class="text-lg font-black mb-3">💰 ငွေရှင်းတာမှတ်မယ်</h2>
+                    <form id="add-payment-form" class="space-y-3">
+                        <div class="custom-dropdown" id="payment-customer-dropdown">
+                            <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty" id="payment-customer-btn">
+                                <span id="payment-customer-text">ဖောက်သည်ရွေးပါ</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div class="custom-dropdown-panel" id="payment-customer-panel">
+                                <div class="custom-dropdown-search">
+                                    <input type="text" id="payment-customer-search" 
+                                        placeholder="🔍 ရှာရန်..." 
+                                        class="w-full p-2 border-2 border-black font-bold"
+                                        autocomplete="off">
+                                </div>
+                                <div class="custom-dropdown-list" id="payment-customer-list">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="payment-customer" required>
+                        <div class="brutalist-card bg-white p-3" id="customer-debt-info">
+                            <span class="font-bold">ပေးရန်ကျန်ငွေ: </span>
+                            <span class="text-xl font-black text-red-600" id="remaining-debt">0 Ks</span>
+                        </div>
+                        <input type="number" id="payment-amount" placeholder="ပေးမယ့်ပမာဏ" 
+                            class="brutalist-input w-full p-3" min="0" required>
+                        <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
+                            သိမ်းမယ်
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Recent Payments -->
+                <div class="brutalist-card bg-white p-4">
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">💵 နောက်ဆုံးငွေရှင်းစာရင်း</h2>
+                    <!-- Payment Search -->
+                    <div class="mb-4">
+                        <input type="text" id="payment-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..." 
+                            class="brutalist-input w-full p-3">
+                    </div>
+                    <div id="recent-payments" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="view-settings" class="view-content hidden">
+                <!-- Backup & Restore Card -->
+                <div class="brutalist-card gradient-purple p-6 mb-6 animate-slideInUp">
+                    <div class="text-center mb-6">
+                        <div class="text-6xl mb-3">💾</div>
+                        <h2 class="text-2xl font-black mb-2">Backup & Restore</h2>
+                        <p class="font-bold text-sm text-gray-700">ဒေတာများ သိမ်းဆည်းခြင်း နှင့် ပြန်လည်ရယူခြင်း</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Backup Section -->
+                        <div class="brutalist-card bg-white p-4">
+                            <h3 class="font-black text-lg mb-2 flex items-center gap-2">
+                                📥 Backup Data
+                            </h3>
+                            <p class="text-sm font-bold text-gray-600 mb-3">
+                                လက်ရှိ ဒေတာအားလုံးကို JSON ဖိုင်အဖြစ် ဒေါင်းလုဒ်လုပ်ပါ။
+                            </p>
+                            <button onclick="backupData()" class="brutalist-btn bg-blue-500 text-white w-full py-3">
+                                💾 Backup လုပ်မယ်
+                            </button>
+                        </div>
+
+                        <!-- Restore Section -->
+                        <div class="brutalist-card bg-white p-4">
+                            <h3 class="font-black text-lg mb-2 flex items-center gap-2">
+                                📤 Restore Data
+                            </h3>
+                            <p class="text-sm font-bold text-gray-600 mb-3">
+                                Backup လုပ်ထားသော ဖိုင်မှ ဒေတာများကို ပြန်လည်ရယူပါ။
+                            </p>
+                            <input type="file" id="restore-file" accept=".json" class="hidden">
+                            <button onclick="document.getElementById('restore-file').click()" class="brutalist-btn bg-green-500 text-white w-full py-3">
+                                📂 Restore လုပ်မယ်
+                            </button>
+                        </div>
+
+                        <!-- Warning Notice -->
+                        <div class="brutalist-card bg-yellow-100 p-4 border-4 border-yellow-600">
+                            <div class="flex gap-3">
+                                <div class="text-2xl">⚠️</div>
+                                <div>
+                                    <p class="font-black text-sm mb-1">သတိပြုရန်</p>
+                                    <p class="text-xs font-bold text-gray-700">
+                                        Restore လုပ်ရင် လက်ရှိ ဒေတာအားလုံး ပျောက်သွားပြီး backup မှ ဒေတာများနဲ့ အစားထိုးမှာ ဖြစ်ပါတယ်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Info -->
+                <div class="brutalist-card bg-white p-4">
+                    <h3 class="font-black text-lg mb-3 border-b-3 border-black pb-2">📊 ဒေတာအချက်အလက်</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between p-3 bg-blue-50 border-2 border-black">
+                            <span class="font-bold">👥 ဖောက်သည်ဦးရေ</span>
+                            <span class="font-black" id="settings-customers-count">0</span>
+                        </div>
+                        <div class="flex justify-between p-3 bg-red-50 border-2 border-black">
+                            <span class="font-bold">📝 ကြွေးမှတ်တမ်း</span>
+                            <span class="font-black" id="settings-debts-count">0</span>
+                        </div>
+                        <div class="flex justify-between p-3 bg-green-50 border-2 border-black">
+                            <span class="font-bold">💰 ငွေရှင်းမှတ်တမ်း</span>
+                            <span class="font-black" id="settings-payments-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Customer Detail Modal -->
+    <div id="customer-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 p-4 overflow-y-auto modal-backdrop">
+        <div class="max-w-md mx-auto mt-10 mb-10">
+            <div class="brutalist-card bg-white p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-black" id="modal-customer-name"></h2>
+                        <p class="font-bold" id="modal-customer-phone"></p>
+                    </div>
+                    <div class="flex gap-2 items-start">
+                        <button onclick="editCustomer()" class="brutalist-btn bg-blue-400 text-white px-3 py-2 text-xs">
+                            ✏️ Edit
+                        </button>
+                        <button onclick="deleteCustomer()" class="brutalist-btn bg-red-400 text-white px-3 py-2 text-xs">
+                            🗑️ Del
+                        </button>
+                        <button onclick="closeModal()" class="brutalist-btn bg-gray-400 text-white px-3 py-2 text-xs">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="brutalist-card bg-red-100 p-4 mb-4">
+                    <div class="text-sm font-bold mb-1">စုစုပေါင်းကြွေးကျန်</div>
+                    <div class="text-3xl font-black text-red-600" id="modal-total-debt">0 Ks</div>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="font-black mb-2 text-lg border-b-3 border-black pb-2">အကြွေးယူမှုစာရင်း</h3>
+                    <div id="modal-debts" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-black mb-2 text-lg border-b-3 border-black pb-2">ငွေရှင်းမှတ်တမ်း</h3>
+                    <div id="modal-payments" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Customer Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-blue p-6">
+                <h2 class="text-xl font-black mb-4 text-center">✏️ ဖောက်သည် အချက်အလက်ပြင်ဆင်ရန်</h2>
+                <form id="edit-customer-form" class="space-y-3">
+                    <input type="hidden" id="edit-customer-id">
+                    <div>
+                        <label class="font-bold text-sm block mb-1">အမည်</label>
+                        <input type="text" id="edit-customer-name" 
+                            class="brutalist-input w-full p-3" required>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ဖုန်းနံပါတ်</label>
+                        <input type="tel" id="edit-customer-phone" 
+                            class="brutalist-input w-full p-3">
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">
+                            ✅ သိမ်းမယ်
+                        </button>
+                        <button type="button" onclick="closeEditModal()" 
+                            class="brutalist-btn bg-gray-400 text-white w-full py-3">
+                            ❌ မလုပ်တော့ဘူး
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">သတိပေးချက်!</h2>
+                    <p class="font-bold text-sm">ဒီဖောက်သည်ကို ဖျက်ပစ်မှာ သေချာပါသလား?</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4">
+                    <div class="font-black" id="delete-customer-name"></div>
+                    <div class="font-bold text-sm text-gray-600" id="delete-customer-phone"></div>
+                </div>
+                <div class="bg-yellow-100 border-3 border-black p-3 mb-4">
+                    <p class="text-xs font-bold text-center">
+                        ⚠️ ဖောက်သည်ကို ဖျက်လိုက်ရင် သူနဲ့ ပတ်သက်တဲ့ ကြွေးစာရင်းတွေ၊ ငွေရှင်းမှတ်တမ်းတွေ အားလုံး ပျောက်သွားမှာပါ!
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDelete()" 
+                        class="brutalist-btn bg-red-600 text-white w-full py-3">
+                        🗑️ ဖျက်ပစ်မယ်
+                    </button>
+                    <button onclick="closeDeleteModal()" 
+                        class="brutalist-btn bg-gray-400 text-white w-full py-3">
+                        ❌ မဖျက်တော့ဘူး
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Debt Modal -->
+    <div id="edit-debt-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-pink p-6">
+                <h2 class="text-xl font-black mb-4 text-center">✏️ ကြွေးစာရင်း ပြင်မယ်</h2>
+                <form id="edit-debt-form" class="space-y-3">
+                    <input type="hidden" id="edit-debt-id">
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ဖောက်သည်</label>
+                        <div class="brutalist-card bg-white p-3" id="edit-debt-customer-name"></div>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">မှတ်စု</label>
+                        <input type="text" id="edit-debt-item" class="brutalist-input w-full p-3" required>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ပမာဏ (Ks)</label>
+                        <input type="number" id="edit-debt-amount" class="brutalist-input w-full p-3" min="0" required>
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅ သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditDebtModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Debt Modal -->
+    <div id="delete-debt-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">ကြွေးစာရင်း ဖျက်မလား?</h2>
+                    <p class="font-bold text-sm">ဒီကြွေးမှတ်တမ်းကို ဖျက်မလား ဆိုတာ စဉ်းစားပြီး မျက်နှာပြင်ပါ။</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4" id="delete-debt-summary"></div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDeleteDebt()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️ ဖျက်မယ်</button>
+                    <button onclick="closeDeleteDebtModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Payment Modal -->
+    <div id="edit-payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-teal p-6">
+                <h2 class="text-xl font-black mb-4 text-center">✏️ ငွေရှင်းစာရင်း ပြင်မယ်</h2>
+                <form id="edit-payment-form" class="space-y-3">
+                    <input type="hidden" id="edit-payment-id">
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ဖောက်သည်</label>
+                        <div class="brutalist-card bg-white p-3" id="edit-payment-customer-name"></div>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ပမာဏ (Ks)</label>
+                        <input type="number" id="edit-payment-amount" class="brutalist-input w-full p-3" min="0" required>
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅ သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditPaymentModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Payment Modal -->
+    <div id="delete-payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">ငွေရှင်းမှတ်တမ်း ဖျက်မလား?</h2>
+                    <p class="font-bold text-sm">ဒီငွေရှင်းမှတ်တမ်းကို ဖျက်မလား သေချာအောင် စဉ်းစားကြည့်ပါ။</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4" id="delete-payment-summary"></div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDeletePayment()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️ ဖျက်မယ်</button>
+                    <button onclick="closeDeletePaymentModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Store
+        let customers = JSON.parse(localStorage.getItem('bakery_customers') || '[]');
+        let debts = JSON.parse(localStorage.getItem('bakery_debts') || '[]');
+        let payments = JSON.parse(localStorage.getItem('bakery_payments') || '[]');
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('bakery_customers', JSON.stringify(customers));
+            localStorage.setItem('bakery_debts', JSON.stringify(debts));
+            localStorage.setItem('bakery_payments', JSON.stringify(payments));
+        }
+
+        // Utility Functions
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US').format(amount) + ' Ks';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'ဒီနေ့ ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'မနေ့က';
+            } else {
+                return date.toLocaleDateString('en-GB');
+            }
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'success', duration = 3000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type]}</div>
+                <div class="toast-message">${message}</div>
+                <div class="toast-progress"></div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('toast-out');
+                setTimeout(() => {
+                    container.removeChild(toast);
+                }, 300);
+            }, duration);
+        }
+
+        // Navigation
+        function showView(viewName) {
+            document.querySelectorAll('.view-content').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            document.getElementById(`nav-${viewName}`).classList.add('active');
+
+            if (viewName === 'dashboard') updateDashboard();
+            if (viewName === 'customers') renderCustomers();
+            if (viewName === 'debts') {
+                populateCustomerSelects();
+                renderRecentDebts();
+            }
+            if (viewName === 'payments') {
+                populateCustomerSelects();
+                renderRecentPayments();
+            }
+            if (viewName === 'settings') updateSettingsView();
+        }
+
+        // Settings View Functions
+        function updateSettingsView() {
+            document.getElementById('settings-customers-count').textContent = customers.length;
+            document.getElementById('settings-debts-count').textContent = debts.length;
+            document.getElementById('settings-payments-count').textContent = payments.length;
+        }
+
+        // Backup Data Function
+        function backupData() {
+            try {
+                const backupData = {
+                    customers: customers,
+                    debts: debts,
+                    payments: payments,
+                    backupDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+
+                const dataStr = JSON.stringify(backupData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                
+                const date = new Date();
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                
+                link.download = `bakery-backup-${year}-${month}-${day}-${hours}-${minutes}.json`;
+                
+                // Force download
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                
+                // Cleanup
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                }, 100);
+                
+                showToast('Backup ဖိုင် ဒေါင်းလုဒ် လုပ်ပြီးပါပြီ!', 'success');
+            } catch (error) {
+                showToast('Backup လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
+                console.error('Backup error:', error);
+            }
+        }
+
+        // Restore Data Function
+        document.getElementById('restore-file').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Check if file is JSON
+            if (!file.name.endsWith('.json')) {
+                showToast('JSON ဖိုင်သာ ရွေးချယ်ပါ!', 'error');
+                e.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    // Validate the backup data structure
+                    if (!data.customers || !data.debts || !data.payments) {
+                        showToast('မှားယွင်းနေတဲ့ Backup ဖိုင် ဖြစ်ပါတယ်!', 'error');
+                        e.target.value = '';
+                        return;
+                    }
+
+                    // Validate that they are arrays
+                    if (!Array.isArray(data.customers) || !Array.isArray(data.debts) || !Array.isArray(data.payments)) {
+                        showToast('Backup ဖိုင်ထဲက ဒေတာပုံစံ မမှန်ပါ!', 'error');
+                        e.target.value = '';
+                        return;
+                    }
+
+                    // Show backup info
+                    const backupDate = data.backupDate ? new Date(data.backupDate).toLocaleString('en-GB') : 'Unknown';
+                    const message = `Backup ရက်စွဲ: ${backupDate}\n\nဖောက်သည်: ${data.customers.length}\nကြွေးမှတ်တမ်း: ${data.debts.length}\nငွေရှင်းမှတ်တမ်း: ${data.payments.length}\n\nလက်ရှိ ဒေတာအားလုံး ပျောက်သွားမှာပါ။ ဆက်လုပ်မလား?`;
+
+                    // Confirm before restoring
+                    if (confirm(message)) {
+                        customers = data.customers;
+                        debts = data.debts;
+                        payments = data.payments;
+                        
+                        saveData();
+                        updateSettingsView();
+                        updateDashboard();
+                        
+                        showToast('Restore လုပ်ပြီးပါပြီ! ဒေတာများ ပြန်လည်ရယူပြီးပါပြီ။', 'success');
+                        
+                        // Refresh current view
+                        const activeNav = document.querySelector('.nav-btn.active');
+                        if (activeNav) {
+                            const viewName = activeNav.id.replace('nav-', '');
+                            if (viewName !== 'settings') {
+                                showView(viewName);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    showToast('Backup ဖိုင်ကို ဖတ်လို့ မရပါ! JSON ပုံစံ မမှန်ပါ။', 'error');
+                    console.error('Restore error:', error);
+                }
+            };
+            
+            reader.onerror = () => {
+                showToast('ဖိုင်ဖတ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
+            };
+            
+            reader.readAsText(file);
+            e.target.value = ''; // Reset input
+        });
+
+        // Customer Functions
+        function getCustomerTotalDebt(customerId) {
+            const customerDebts = debts.filter(d => d.customerId === customerId);
+            const customerPayments = payments.filter(p => p.customerId === customerId);
+            
+            const totalDebt = customerDebts.reduce((sum, d) => sum + d.total, 0);
+            const totalPaid = customerPayments.reduce((sum, p) => sum + p.amount, 0);
+            
+            return totalDebt - totalPaid;
+        }
+
+        document.getElementById('add-customer-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newName = document.getElementById('customer-name').value.trim();
+            const newPhone = document.getElementById('customer-phone').value.trim();
+            
+            // Check for duplicate name
+            const existingCustomer = customers.find(c => c.name.toLowerCase() === newName.toLowerCase());
+            if (existingCustomer) {
+                showToast('ရှိပြီးသားပါ! ဒီဖောက်သည်ကို အရင်က ထည့်ထားပြီးပါပြီ', 'warning');
+                return;
+            }
+            
+            const customer = {
+                id: generateId(),
+                name: newName,
+                phone: newPhone,
+                createdAt: new Date().toISOString()
+            };
+
+            customers.push(customer);
+            saveData();
+            
+            e.target.reset();
+            renderCustomers();
+            populateCustomerSelects();
+            showToast('ဖောက်သည်အသစ် ထည့်ပြီးပါပြီ!', 'success');
+        });
+
+        function renderCustomers(searchTerm = '') {
+            const list = document.getElementById('customer-list');
+            let filteredCustomers = customers;
+
+            if (searchTerm) {
+                filteredCustomers = customers.filter(c => 
+                    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    c.phone.includes(searchTerm)
+                );
+            }
+
+            if (filteredCustomers.length === 0) {
+                list.innerHTML = '<div class="text-center p-8 text-gray-500 font-bold">စာရင်းမရှိသေးပါ</div>';
+                return;
+            }
+
+            list.innerHTML = filteredCustomers.map(customer => {
+                const debt = getCustomerTotalDebt(customer.id);
+                const bgColor = debt > 0 ? 'bg-red-100' : 'bg-green-100';
+                
+                return `
+                    <div class="brutalist-card ${bgColor} p-4 cursor-pointer"
+                         onclick="showCustomerDetail('${customer.id}')">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="font-black text-lg">${customer.name}</div>
+                                <div class="font-bold text-sm text-gray-700">📞 ${customer.phone}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs font-bold">ကြွေးကျန်</div>
+                                <div class="text-lg font-black ${debt > 0 ? 'text-red-600' : 'text-green-600'}">
+                                    ${formatCurrency(debt)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.getElementById('customer-search').addEventListener('input', (e) => {
+            renderCustomers(e.target.value);
+        });
+
+        // Customer Detail Modal
+        function showCustomerDetail(customerId) {
+            const customer = customers.find(c => c.id === customerId);
+            if (!customer) return;
+
+            document.getElementById('modal-customer-name').textContent = customer.name;
+            document.getElementById('modal-customer-phone').textContent = customer.phone;
+            
+            const totalDebt = getCustomerTotalDebt(customerId);
+            document.getElementById('modal-total-debt').textContent = formatCurrency(totalDebt);
+
+            const customerDebts = debts.filter(d => d.customerId === customerId).sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+
+            const customerPayments = payments.filter(p => p.customerId === customerId).sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+
+            document.getElementById('modal-debts').innerHTML = customerDebts.length > 0 ? 
+                customerDebts.map(debt => `
+                    <div class="debt-item bg-red-50 p-3 border-3 border-black">
+                        <div class="flex justify-between">
+                            <div class="font-bold">${debt.item}</div>
+                            <div class="font-black text-red-600">${formatCurrency(debt.total)}</div>
+                        </div>
+                        <div class="text-xs mt-1 text-gray-600">
+                            ${formatDate(debt.createdAt)}
+                        </div>
+                    </div>
+                `).join('') : '<div class="text-center text-gray-500 py-4">အကြွေးယူမှုမရှိသေးပါ</div>';
+
+            document.getElementById('modal-payments').innerHTML = customerPayments.length > 0 ?
+                customerPayments.map(payment => `
+                    <div class="payment-item bg-green-50 p-3 border-3 border-black">
+                        <div class="flex justify-between">
+                            <div class="font-bold">ငွေရှင်းဝင်</div>
+                            <div class="font-black text-green-600">${formatCurrency(payment.amount)}</div>
+                        </div>
+                        <div class="text-xs mt-1 text-gray-600">${formatDate(payment.createdAt)}</div>
+                    </div>
+                `).join('') : '<div class="text-center text-gray-500 py-4">ငွေရှင်းတာမရှိသေးပါ</div>';
+
+            document.getElementById('customer-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customer-modal').classList.add('hidden');
+        }
+
+        // Debt Functions
+        function populateCustomerSelects() {
+            const debtSelect = document.getElementById('debt-customer');
+            const paymentSelect = document.getElementById('payment-customer');
+
+            const options = customers.map(c => 
+                `<option value="${c.id}">${c.name} - ${c.phone}</option>`
+            ).join('');
+
+            debtSelect.innerHTML = '<option value="">ဖောက်သည်ရွေးပါ</option>' + options;
+            paymentSelect.innerHTML = '<option value="">ဖောက်သည်ရွေးပါ</option>' + options;
+        }
+
+        // Add Debt Form Submit
+        document.getElementById('add-debt-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const customerId = document.getElementById('debt-customer').value;
+            const item = document.getElementById('debt-item').value.trim();
+            const amountValue = document.getElementById('debt-amount').value;
+            const amount = parseInt(amountValue, 10);
+
+            // Validate customer selection
+            if (!customerId) {
+                showToast('ဖောက်သည်ကို အရင်ရွေးပါ၊ ပြီးမှ ကြွေးမှတ်နိုင်ပါတယ်။', 'warning');
+                return;
+            }
+
+            // Basic validation for item and amount
+            if (!item) {
+                showToast('ဘာပစ္စည်းကြွေးထားတယ်ဆိုတာ မှတ်စုထည့်ပါ။', 'warning');
+                return;
+            }
+
+            if (isNaN(amount) || amount <= 0) {
+                showToast('ပမာဏကို မှန်ကန်အောင် ထည့်ပေးပါ။', 'warning');
+                return;
+            }
+            
+            const debt = {
+                id: generateId(),
+                customerId,
+                item,
+                total: amount,
+                createdAt: new Date().toISOString()
+            };
+
+            debts.push(debt);
+            saveData();
+            
+            e.target.reset();
+            resetCustomDropdowns();
+            renderRecentDebts(document.getElementById('debt-search') ? document.getElementById('debt-search').value : '');
+            updateDashboard();
+            showToast('ကြွေးစာရင်း သိမ်းပြီးပါပြီ!', 'success');
+        });
+
+        // Debt search input
+        document.getElementById('debt-search').addEventListener('input', (e) => {
+            renderRecentDebts(e.target.value);
+        });
+
+        // Debt Edit/Delete helpers
+        let currentDebtId = null;
+
+        function openDebtEditModal(debtId) {
+            const debt = debts.find(d => d.id === debtId);
+            if (!debt) return;
+
+            currentDebtId = debtId;
+            const customer = customers.find(c => c.id === debt.customerId);
+            document.getElementById('edit-debt-id').value = debt.id;
+            document.getElementById('edit-debt-customer-name').textContent = customer ? customer.name : 'Unknown';
+            document.getElementById('edit-debt-item').value = debt.item;
+            document.getElementById('edit-debt-amount').value = debt.total;
+
+            document.getElementById('edit-debt-modal').classList.remove('hidden');
+        }
+
+        function closeEditDebtModal() {
+            document.getElementById('edit-debt-modal').classList.add('hidden');
+            currentDebtId = null;
+        }
+
+        document.getElementById('edit-debt-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const debtId = document.getElementById('edit-debt-id').value;
+            const index = debts.findIndex(d => d.id === debtId);
+            if (index === -1) return;
+
+            debts[index].item = document.getElementById('edit-debt-item').value;
+            debts[index].total = parseInt(document.getElementById('edit-debt-amount').value) || 0;
+
+            saveData();
+            closeEditDebtModal();
+            renderRecentDebts(document.getElementById('debt-search').value || '');
+            updateDashboard();
+            showToast('ကြွေးစာရင်း ပြင်ဆင်ပြီးပါပြီ!', 'success');
+        });
+
+        function openDebtDeleteModal(debtId) {
+            const debt = debts.find(d => d.id === debtId);
+            if (!debt) return;
+
+            currentDebtId = debtId;
+            const customer = customers.find(c => c.id === debt.customerId);
+            const summaryEl = document.getElementById('delete-debt-summary');
+            summaryEl.innerHTML = `
+                <div class="font-black mb-1">${customer ? customer.name : 'Unknown'}</div>
+                <div class="font-bold text-sm mb-1">${debt.item}</div>
+                <div class="font-black text-red-600 mb-1">${formatCurrency(debt.total)}</div>
+                <div class="text-xs text-gray-600">${formatDate(debt.createdAt)}</div>
+            `;
+
+            document.getElementById('delete-debt-modal').classList.remove('hidden');
+        }
+
+        function closeDeleteDebtModal() {
+            document.getElementById('delete-debt-modal').classList.add('hidden');
+            currentDebtId = null;
+        }
+
+        function confirmDeleteDebt() {
+            if (!currentDebtId) return;
+            debts = debts.filter(d => d.id !== currentDebtId);
+            saveData();
+            closeDeleteDebtModal();
+            renderRecentDebts(document.getElementById('debt-search').value || '');
+            updateDashboard();
+            showToast('ကြွေးမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
+            currentDebtId = null;
+        }
+
+        function renderRecentDebts(searchTerm = '') {
+            const list = document.getElementById('recent-debts');
+
+            let filteredDebts = debts.slice().sort((a, b) =>
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+
+            if (searchTerm) {
+                filteredDebts = filteredDebts.filter(debt => {
+                    const customer = customers.find(c => c.id === debt.customerId);
+                    const name = customer ? customer.name.toLowerCase() : '';
+                    return name.includes(searchTerm.toLowerCase());
+                });
+            }
+
+            if (filteredDebts.length === 0) {
+                list.innerHTML = '<div class="text-center p-8 text-gray-500 font-bold">စာရင်းမရှိသေးပါ</div>';
+                return;
+            }
+
+            list.innerHTML = filteredDebts.map(debt => {
+                const customer = customers.find(c => c.id === debt.customerId);
+                return `
+                    <div class="debt-item bg-red-50 p-4 border-3 border-black">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <div class="font-black">${customer ? customer.name : 'Unknown'}</div>
+                                <div class="text-xs text-gray-600 mt-1">${formatDate(debt.createdAt)}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xl font-black text-red-600">${formatCurrency(debt.total)}</div>
+                            </div>
+                        </div>
+                        <div class="font-bold text-sm mb-2">${debt.item}</div>
+                        <div class="flex justify-end gap-2 text-xs font-bold">
+                            <button class="brutalist-btn bg-blue-500 text-white px-3 py-1" onclick="openDebtEditModal('${debt.id}')">Edit</button>
+                            <button class="brutalist-btn bg-red-500 text-white px-3 py-1" onclick="openDebtDeleteModal('${debt.id}')">Del</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Payment Functions
+        document.getElementById('payment-customer').addEventListener('change', (e) => {
+            const customerId = e.target.value;
+            if (customerId) {
+                const debt = getCustomerTotalDebt(customerId);
+                document.getElementById('remaining-debt').textContent = formatCurrency(debt);
+                document.getElementById('customer-debt-info').classList.remove('hidden');
+            } else {
+                document.getElementById('customer-debt-info').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('add-payment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const customerId = document.getElementById('payment-customer').value;
+            const amountValue = document.getElementById('payment-amount').value;
+            const amount = parseInt(amountValue, 10);
+
+            // Validate customer selection
+            if (!customerId) {
+                showToast('ဖောက်သည်ကို အရင်ရွေးပြီးမှ ငွေရှင်းမှတ်ပါ။', 'warning');
+                return;
+            }
+
+            // Validate amount
+            if (isNaN(amount) || amount <= 0) {
+                showToast('ပေးမယ့်ပမာဏကို မှန်ကန်အောင် ထည့်ပေးပါ။', 'warning');
+                return;
+            }
+
+            const remainingDebt = getCustomerTotalDebt(customerId);
+
+            if (remainingDebt <= 0) {
+                showToast('ဒီဖောက်သည်မှာ ပေးရန်ကြွေး မရှိတော့ပါ!', 'info');
+                return;
+            }
+
+            if (amount > remainingDebt) {
+                showToast('ရှင်းတဲ့ငွေက ကြွေးကျန်ထက်များနေပါတယ်!', 'warning');
+                return;
+            }
+
+            const payment = {
+                id: generateId(),
+                customerId,
+                amount,
+                createdAt: new Date().toISOString()
+            };
+
+            payments.push(payment);
+            saveData();
+            
+            e.target.reset();
+            document.getElementById('customer-debt-info').classList.add('hidden');
+            renderRecentPayments(document.getElementById('payment-search') ? document.getElementById('payment-search').value : '');
+            updateDashboard();
+            showToast('ငွေရှင်းတာ သိမ်းပြီးပါပြီ!', 'success');
+        });
+
+        // Payment search
+        document.getElementById('payment-search').addEventListener('input', (e) => {
+            renderRecentPayments(e.target.value);
+        });
+
+        // Payment Edit/Delete helpers
+        let currentPaymentId = null;
+
+        function openPaymentEditModal(paymentId) {
+            const payment = payments.find(p => p.id === paymentId);
+            if (!payment) return;
+
+            currentPaymentId = paymentId;
+            const customer = customers.find(c => c.id === payment.customerId);
+            document.getElementById('edit-payment-id').value = payment.id;
+            document.getElementById('edit-payment-customer-name').textContent = customer ? customer.name : 'Unknown';
+            document.getElementById('edit-payment-amount').value = payment.amount;
+
+            document.getElementById('edit-payment-modal').classList.remove('hidden');
+        }
+
+        function closeEditPaymentModal() {
+            document.getElementById('edit-payment-modal').classList.add('hidden');
+            currentPaymentId = null;
+        }
+
+        document.getElementById('edit-payment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const paymentId = document.getElementById('edit-payment-id').value;
+            const index = payments.findIndex(p => p.id === paymentId);
+            if (index === -1) return;
+
+            const newAmount = parseInt(document.getElementById('edit-payment-amount').value) || 0;
+            payments[index].amount = newAmount;
+
+            saveData();
+            closeEditPaymentModal();
+            renderRecentPayments(document.getElementById('payment-search').value || '');
+            updateDashboard();
+            showToast('ငွေရှင်းမှတ်တမ်း ပြင်ဆင်ပြီးပါပြီ!', 'success');
+        });
+
+        function openPaymentDeleteModal(paymentId) {
+            const payment = payments.find(p => p.id === paymentId);
+            if (!payment) return;
+
+            currentPaymentId = paymentId;
+            const customer = customers.find(c => c.id === payment.customerId);
+            const summaryEl = document.getElementById('delete-payment-summary');
+            summaryEl.innerHTML = `
+                <div class="font-black mb-1">${customer ? customer.name : 'Unknown'}</div>
+                <div class="font-black text-green-600 mb-1">${formatCurrency(payment.amount)}</div>
+                <div class="text-xs text-gray-600">${formatDate(payment.createdAt)}</div>
+            `;
+
+            document.getElementById('delete-payment-modal').classList.remove('hidden');
+        }
+
+        function closeDeletePaymentModal() {
+            document.getElementById('delete-payment-modal').classList.add('hidden');
+            currentPaymentId = null;
+        }
+
+        function confirmDeletePayment() {
+            if (!currentPaymentId) return;
+            payments = payments.filter(p => p.id !== currentPaymentId);
+            saveData();
+            closeDeletePaymentModal();
+            renderRecentPayments(document.getElementById('payment-search').value || '');
+            updateDashboard();
+            showToast('ငွေရှင်းမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
+            currentPaymentId = null;
+        }
+
+        function renderRecentPayments(searchTerm = '') {
+            const list = document.getElementById('recent-payments');
+            let recentPayments = payments.slice().sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+
+            if (searchTerm) {
+                recentPayments = recentPayments.filter(payment => {
+                    const customer = customers.find(c => c.id === payment.customerId);
+                    const name = customer ? customer.name.toLowerCase() : '';
+                    return name.includes(searchTerm.toLowerCase());
+                });
+            }
+
+            if (recentPayments.length === 0) {
+                list.innerHTML = '<div class="text-center p-8 text-gray-500 font-bold">စာရင်းမရှိသေးပါ</div>';
+                return;
+            }
+
+            list.innerHTML = recentPayments.map(payment => {
+                const customer = customers.find(c => c.id === payment.customerId);
+                return `
+                    <div class="payment-item bg-green-50 p-4 border-3 border-black">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <div class="font-black">${customer ? customer.name : 'Unknown'}</div>
+                                <div class="text-xs text-gray-600 mt-1">${formatDate(payment.createdAt)}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xl font-black text-green-600">${formatCurrency(payment.amount)}</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2 text-xs font-bold">
+                            <button class="brutalist-btn bg-blue-500 text-white px-3 py-1" onclick="openPaymentEditModal('${payment.id}')">Edit</button>
+                            <button class="brutalist-btn bg-red-500 text-white px-3 py-1" onclick="openPaymentDeleteModal('${payment.id}')">Del</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Dashboard Functions
+        function updateDashboard() {
+            // Total Outstanding Debt
+            const totalDebt = customers.reduce((sum, customer) => 
+                sum + getCustomerTotalDebt(customer.id), 0
+            );
+            document.getElementById('total-debt').textContent = formatCurrency(totalDebt);
+
+            // Total Customers
+            document.getElementById('total-customers').textContent = customers.length;
+
+            // Today's Payments
+            const today = new Date().toDateString();
+            const todayPayments = payments.filter(p => 
+                new Date(p.createdAt).toDateString() === today
+            );
+            const todayTotal = todayPayments.reduce((sum, p) => sum + p.amount, 0);
+            document.getElementById('today-payment').textContent = formatCurrency(todayTotal);
+
+            // This Month's Debt
+            const thisMonth = new Date().getMonth();
+            const thisYear = new Date().getFullYear();
+            const monthDebts = debts.filter(d => {
+                const date = new Date(d.createdAt);
+                return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
+            });
+            const monthTotal = monthDebts.reduce((sum, d) => sum + d.total, 0);
+            document.getElementById('month-debt').textContent = formatCurrency(monthTotal);
+
+            // Top Debtors
+            const debtors = customers.map(c => ({
+                ...c,
+                debt: getCustomerTotalDebt(c.id)
+            })).filter(c => c.debt > 0)
+              .sort((a, b) => b.debt - a.debt)
+              .slice(0, 5);
+
+            const debtorsList = document.getElementById('top-debtors');
+            if (debtors.length === 0) {
+                debtorsList.innerHTML = '<div class="text-center text-gray-500 py-4">စာရင်းမရှိသေးပါ</div>';
+            } else {
+                debtorsList.innerHTML = debtors.map((debtor, index) => `
+                    <div class="flex items-center justify-between p-3 bg-white border-3 border-black cursor-pointer hover:bg-yellow-50"
+                         onclick="showCustomerDetail('${debtor.id}')">
+                        <div class="flex items-center gap-3">
+                            <div class="font-black text-xl w-8">${index + 1}.</div>
+                            <div>
+                                <div class="font-bold">${debtor.name}</div>
+                                <div class="text-xs text-gray-600">${debtor.phone}</div>
+                            </div>
+                        </div>
+                        <div class="font-black text-red-600">${formatCurrency(debtor.debt)}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Today's Transactions
+            const transactionsList = document.getElementById('today-transactions');
+            if (todayPayments.length === 0) {
+                transactionsList.innerHTML = '<div class="text-center text-gray-500 py-4">စာရင်းမရှိသေးပါ</div>';
+            } else {
+                transactionsList.innerHTML = todayPayments.map(payment => {
+                    const customer = customers.find(c => c.id === payment.customerId);
+                    return `
+                        <div class="payment-item bg-green-50 p-3 border-3 border-black">
+                            <div class="flex justify-between">
+                                <div class="font-bold">${customer ? customer.name : 'Unknown'}</div>
+                                <div class="font-black text-green-600">${formatCurrency(payment.amount)}</div>
+                            </div>
+                            <div class="text-xs text-gray-600 mt-1">
+                                ${new Date(payment.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Edit Customer Functions
+        let currentCustomerId = null;
+
+        function editCustomer() {
+            const customerName = document.getElementById('modal-customer-name').textContent;
+            const customerPhone = document.getElementById('modal-customer-phone').textContent;
+            
+            const customer = customers.find(c => c.name === customerName && c.phone === customerPhone);
+            if (!customer) return;
+            
+            currentCustomerId = customer.id;
+            document.getElementById('edit-customer-id').value = customer.id;
+            document.getElementById('edit-customer-name').value = customer.name;
+            document.getElementById('edit-customer-phone').value = customer.phone;
+            
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+            currentCustomerId = null;
+        }
+
+        document.getElementById('edit-customer-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const customerId = document.getElementById('edit-customer-id').value;
+            const customerIndex = customers.findIndex(c => c.id === customerId);
+            
+            if (customerIndex === -1) return;
+            
+            customers[customerIndex].name = document.getElementById('edit-customer-name').value;
+            customers[customerIndex].phone = document.getElementById('edit-customer-phone').value;
+            
+            saveData();
+            closeEditModal();
+            
+            // Refresh the customer detail modal
+            showCustomerDetail(customerId);
+            
+            // Refresh lists
+            renderCustomers();
+            populateCustomerSelects();
+            updateDashboard();
+            
+            showToast('ဖောက်သည်အချက်အလက် ပြင်ဆင်ပြီးပါပြီ!', 'success');
+        });
+
+        // Delete Customer Functions
+        function deleteCustomer() {
+            const customerName = document.getElementById('modal-customer-name').textContent;
+            const customerPhone = document.getElementById('modal-customer-phone').textContent;
+            
+            const customer = customers.find(c => c.name === customerName && c.phone === customerPhone);
+            if (!customer) return;
+            
+            // Check if customer has outstanding debt
+            const customerDebt = getCustomerTotalDebt(customer.id);
+            if (customerDebt > 0) {
+                showToast('အကြွေးပေးရန် ကျန်နေသေးတဲ့အတွက် ဖျက်လို့ မရပါ!', 'error', 4000);
+                return;
+            }
+            
+            currentCustomerId = customer.id;
+            document.getElementById('delete-customer-name').textContent = customer.name;
+            document.getElementById('delete-customer-phone').textContent = customer.phone;
+            
+            document.getElementById('delete-modal').classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('delete-modal').classList.add('hidden');
+            currentCustomerId = null;
+        }
+
+        function confirmDelete() {
+            if (!currentCustomerId) return;
+            
+            // Remove customer
+            customers = customers.filter(c => c.id !== currentCustomerId);
+            
+            // Remove all debts for this customer
+            debts = debts.filter(d => d.customerId !== currentCustomerId);
+            
+            // Remove all payments for this customer
+            payments = payments.filter(p => p.customerId !== currentCustomerId);
+            
+            saveData();
+            closeDeleteModal();
+            closeModal();
+            
+            // Refresh all displays
+            renderCustomers();
+            populateCustomerSelects();
+            updateDashboard();
+            
+            showToast('ဖောက်သည်နှင့် သူနဲ့ပတ်သက်သော မှတ်တမ်းများကို ဖျက်ပြီးပါပြီ!', 'info');
+            currentCustomerId = null;
+        }
+
+        // Custom Dropdown Functions
+        function initCustomDropdowns() {
+            // Debt Customer Dropdown
+            const debtBtn = document.getElementById('debt-customer-btn');
+            const debtPanel = document.getElementById('debt-customer-panel');
+            const debtSearch = document.getElementById('debt-customer-search');
+            const debtList = document.getElementById('debt-customer-list');
+            const debtInput = document.getElementById('debt-customer');
+            const debtText = document.getElementById('debt-customer-text');
+            const debtArrow = debtBtn.querySelector('.dropdown-arrow');
+
+            // Payment Customer Dropdown
+            const paymentBtn = document.getElementById('payment-customer-btn');
+            const paymentPanel = document.getElementById('payment-customer-panel');
+            const paymentSearch = document.getElementById('payment-customer-search');
+            const paymentList = document.getElementById('payment-customer-list');
+            const paymentInput = document.getElementById('payment-customer');
+            const paymentText = document.getElementById('payment-customer-text');
+            const paymentArrow = paymentBtn.querySelector('.dropdown-arrow');
+
+            // Toggle Debt Dropdown
+            debtBtn.addEventListener('click', () => {
+                const isOpen = debtPanel.classList.contains('open');
+                closeAllDropdowns();
+                if (!isOpen) {
+                    debtBtn.classList.add('open');
+                    debtPanel.classList.add('open');
+                    debtArrow.classList.add('open');
+                    renderCustomerDropdown('debt');
+                    setTimeout(() => debtSearch.focus(), 100);
+                }
+            });
+
+            // Toggle Payment Dropdown
+            paymentBtn.addEventListener('click', () => {
+                const isOpen = paymentPanel.classList.contains('open');
+                closeAllDropdowns();
+                if (!isOpen) {
+                    paymentBtn.classList.add('open');
+                    paymentPanel.classList.add('open');
+                    paymentArrow.classList.add('open');
+                    renderCustomerDropdown('payment');
+                    setTimeout(() => paymentSearch.focus(), 100);
+                }
+            });
+
+            // Search functionality for debt
+            debtSearch.addEventListener('input', () => {
+                renderCustomerDropdown('debt', debtSearch.value);
+            });
+
+            // Search functionality for payment
+            paymentSearch.addEventListener('input', () => {
+                renderCustomerDropdown('payment', paymentSearch.value);
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.custom-dropdown')) {
+                    closeAllDropdowns();
+                }
+            });
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.custom-dropdown-button').forEach(btn => {
+                btn.classList.remove('open');
+            });
+            document.querySelectorAll('.custom-dropdown-panel').forEach(panel => {
+                panel.classList.remove('open');
+            });
+            document.querySelectorAll('.dropdown-arrow').forEach(arrow => {
+                arrow.classList.remove('open');
+            });
+        }
+
+        function renderCustomerDropdown(type, searchTerm = '') {
+            const listEl = type === 'debt' ? 
+                document.getElementById('debt-customer-list') : 
+                document.getElementById('payment-customer-list');
+
+            let filteredCustomers = customers;
+            
+            if (searchTerm) {
+                filteredCustomers = customers.filter(c => 
+                    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    c.phone.includes(searchTerm)
+                );
+            }
+
+            if (filteredCustomers.length === 0) {
+                listEl.innerHTML = '<div class="p-4 text-center text-gray-500 font-bold">မတွေ့ပါ</div>';
+                return;
+            }
+
+            const currentValue = type === 'debt' ? 
+                document.getElementById('debt-customer').value : 
+                document.getElementById('payment-customer').value;
+
+            listEl.innerHTML = filteredCustomers.map(customer => `
+                <div class="custom-dropdown-item ${customer.id === currentValue ? 'selected' : ''}" 
+                     data-id="${customer.id}" 
+                     data-name="${customer.name}"
+                     data-type="${type}">
+                    <div class="font-bold">${customer.name}</div>
+                    <div class="text-xs text-gray-600">📞 ${customer.phone}</div>
+                </div>
+            `).join('');
+
+            // Add click listeners
+            listEl.querySelectorAll('.custom-dropdown-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    selectCustomer(
+                        item.dataset.type,
+                        item.dataset.id,
+                        item.dataset.name
+                    );
+                });
+            });
+        }
+
+        function selectCustomer(type, customerId, customerName) {
+            if (type === 'debt') {
+                document.getElementById('debt-customer').value = customerId;
+                document.getElementById('debt-customer-text').textContent = customerName;
+                document.getElementById('debt-customer-btn').classList.remove('empty');
+                document.getElementById('debt-customer-search').value = '';
+            } else {
+                document.getElementById('payment-customer').value = customerId;
+                document.getElementById('payment-customer-text').textContent = customerName;
+                document.getElementById('payment-customer-btn').classList.remove('empty');
+                document.getElementById('payment-customer-search').value = '';
+                
+                // Trigger debt info update
+                const debt = getCustomerTotalDebt(customerId);
+                document.getElementById('remaining-debt').textContent = formatCurrency(debt);
+                document.getElementById('customer-debt-info').classList.remove('hidden');
+            }
+            
+            closeAllDropdowns();
+        }
+
+        function resetCustomDropdowns() {
+            // Reset debt dropdown
+            document.getElementById('debt-customer').value = '';
+            document.getElementById('debt-customer-text').textContent = 'ဖောက်သည်ရွေးပါ';
+            document.getElementById('debt-customer-btn').classList.add('empty');
+            document.getElementById('debt-customer-search').value = '';
+            
+            // Reset payment dropdown
+            document.getElementById('payment-customer').value = '';
+            document.getElementById('payment-customer-text').textContent = 'ဖောက်သည်ရွေးပါ';
+            document.getElementById('payment-customer-btn').classList.add('empty');
+            document.getElementById('payment-customer-search').value = '';
+        }
+
+        // Override populateCustomerSelects to work with custom dropdowns
+        function populateCustomerSelects() {
+            // Dropdowns are now populated dynamically on click
+            // This function is kept for compatibility
+        }
+
+        // Update form reset handlers
+        document.getElementById('add-debt-form').addEventListener('reset', resetCustomDropdowns);
+        document.getElementById('add-payment-form').addEventListener('reset', resetCustomDropdowns);
+
+        // Initialize
+        initCustomDropdowns();
+        updateDashboard();
+    </script>
+</body>
+</html>

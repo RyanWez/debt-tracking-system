@@ -1,0 +1,170 @@
+// Payment Functions
+document.getElementById('payment-customer').addEventListener('change', (e) => {
+    const customerId = e.target.value;
+    if (customerId) {
+        const debt = getCustomerTotalDebt(customerId);
+        document.getElementById('remaining-debt').textContent = formatCurrency(debt);
+        document.getElementById('customer-debt-info').classList.remove('hidden');
+    } else {
+        document.getElementById('customer-debt-info').classList.add('hidden');
+    }
+});
+
+document.getElementById('add-payment-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const customerId = document.getElementById('payment-customer').value;
+    const amountValue = document.getElementById('payment-amount').value;
+    const amount = parseInt(amountValue, 10);
+
+    if (!customerId) {
+        showToast('ဖောက်သည်ကို အရင်ရွေးပြီးမှ ငွေရှင်းမှတ်ပါ။', 'warning');
+        return;
+    }
+
+    if (isNaN(amount) || amount <= 0) {
+        showToast('ပေးမယ့်ပမာဏကို မှန်ကန်အောင် ထည့်ပေးပါ။', 'warning');
+        return;
+    }
+
+    const remainingDebt = getCustomerTotalDebt(customerId);
+
+    if (remainingDebt <= 0) {
+        showToast('ဒီဖောက်သည်မှာ ပေးရန်ကြွေး မရှိတော့ပါ!', 'info');
+        return;
+    }
+
+    if (amount > remainingDebt) {
+        showToast('ရှင်းတဲ့ငွေက ကြွေးကျန်ထက်များနေပါတယ်!', 'warning');
+        return;
+    }
+
+    const payment = {
+        id: generateId(),
+        customerId,
+        amount,
+        createdAt: new Date().toISOString()
+    };
+
+    payments.push(payment);
+    saveData();
+    
+    e.target.reset();
+    document.getElementById('customer-debt-info').classList.add('hidden');
+    renderRecentPayments(document.getElementById('payment-search') ? document.getElementById('payment-search').value : '');
+    updateDashboard();
+    showToast('ငွေရှင်းတာ သိမ်းပြီးပါပြီ!', 'success');
+});
+
+document.getElementById('payment-search').addEventListener('input', (e) => {
+    renderRecentPayments(e.target.value);
+});
+
+let currentPaymentId = null;
+
+function openPaymentEditModal(paymentId) {
+    const payment = payments.find(p => p.id === paymentId);
+    if (!payment) return;
+
+    currentPaymentId = paymentId;
+    const customer = customers.find(c => c.id === payment.customerId);
+    document.getElementById('edit-payment-id').value = payment.id;
+    document.getElementById('edit-payment-customer-name').textContent = customer ? customer.name : 'Unknown';
+    document.getElementById('edit-payment-amount').value = payment.amount;
+
+    document.getElementById('edit-payment-modal').classList.remove('hidden');
+}
+
+function closeEditPaymentModal() {
+    document.getElementById('edit-payment-modal').classList.add('hidden');
+    currentPaymentId = null;
+}
+
+document.getElementById('edit-payment-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const paymentId = document.getElementById('edit-payment-id').value;
+    const index = payments.findIndex(p => p.id === paymentId);
+    if (index === -1) return;
+
+    const newAmount = parseInt(document.getElementById('edit-payment-amount').value) || 0;
+    payments[index].amount = newAmount;
+
+    saveData();
+    closeEditPaymentModal();
+    renderRecentPayments(document.getElementById('payment-search').value || '');
+    updateDashboard();
+    showToast('ငွေရှင်းမှတ်တမ်း ပြင်ဆင်ပြီးပါပြီ!', 'success');
+});
+
+function openPaymentDeleteModal(paymentId) {
+    const payment = payments.find(p => p.id === paymentId);
+    if (!payment) return;
+
+    currentPaymentId = paymentId;
+    const customer = customers.find(c => c.id === payment.customerId);
+    const summaryEl = document.getElementById('delete-payment-summary');
+    summaryEl.innerHTML = `
+        <div class="font-black mb-1">${customer ? customer.name : 'Unknown'}</div>
+        <div class="font-black text-green-600 mb-1">${formatCurrency(payment.amount)}</div>
+        <div class="text-xs text-gray-600">${formatDate(payment.createdAt)}</div>
+    `;
+
+    document.getElementById('delete-payment-modal').classList.remove('hidden');
+}
+
+function closeDeletePaymentModal() {
+    document.getElementById('delete-payment-modal').classList.add('hidden');
+    currentPaymentId = null;
+}
+
+function confirmDeletePayment() {
+    if (!currentPaymentId) return;
+    payments = payments.filter(p => p.id !== currentPaymentId);
+    saveData();
+    closeDeletePaymentModal();
+    renderRecentPayments(document.getElementById('payment-search').value || '');
+    updateDashboard();
+    showToast('ငွေရှင်းမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
+    currentPaymentId = null;
+}
+
+function renderRecentPayments(searchTerm = '') {
+    const list = document.getElementById('recent-payments');
+    let recentPayments = payments.slice().sort((a, b) => 
+        new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    if (searchTerm) {
+        recentPayments = recentPayments.filter(payment => {
+            const customer = customers.find(c => c.id === payment.customerId);
+            const name = customer ? customer.name.toLowerCase() : '';
+            return name.includes(searchTerm.toLowerCase());
+        });
+    }
+
+    if (recentPayments.length === 0) {
+        list.innerHTML = '<div class="text-center p-8 text-gray-500 font-bold">စာရင်းမရှိသေးပါ</div>';
+        return;
+    }
+
+    list.innerHTML = recentPayments.map(payment => {
+        const customer = customers.find(c => c.id === payment.customerId);
+        return `
+            <div class="payment-item bg-green-50 p-4 border-3 border-black">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <div class="font-black">${customer ? customer.name : 'Unknown'}</div>
+                        <div class="text-xs text-gray-600 mt-1">${formatDate(payment.createdAt)}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xl font-black text-green-600">${formatCurrency(payment.amount)}</div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 text-xs font-bold">
+                    <button class="brutalist-btn bg-blue-500 text-white px-3 py-1" onclick="openPaymentEditModal('${payment.id}')">Edit</button>
+                    <button class="brutalist-btn bg-red-500 text-white px-3 py-1" onclick="openPaymentDeleteModal('${payment.id}')">Del</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
