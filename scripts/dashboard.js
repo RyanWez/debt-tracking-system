@@ -60,11 +60,19 @@ function applyDashboardFilter(filterType) {
     
     let filterText = '';
     
+    // Remove active class from all filter buttons
+    document.querySelectorAll('.dashboard-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-yellow-400');
+        btn.classList.add('bg-blue-100');
+    });
+    
     if (filterType === 'today') {
         dashboardDateFilter.startDate = new Date(today);
         dashboardDateFilter.endDate = new Date(today);
         dashboardDateFilter.endDate.setHours(23, 59, 59, 999);
         filterText = 'ဒီနေ့';
+        document.getElementById('filter-today').classList.remove('bg-blue-100');
+        document.getElementById('filter-today').classList.add('bg-yellow-400');
     } else if (filterType === 'yesterday') {
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
@@ -72,6 +80,8 @@ function applyDashboardFilter(filterType) {
         dashboardDateFilter.endDate = new Date(yesterday);
         dashboardDateFilter.endDate.setHours(23, 59, 59, 999);
         filterText = 'မနေ့က';
+        document.getElementById('filter-yesterday').classList.remove('bg-blue-100');
+        document.getElementById('filter-yesterday').classList.add('bg-yellow-400');
     } else if (filterType === 'week') {
         const startOfWeek = new Date(today);
         const day = startOfWeek.getDay();
@@ -81,12 +91,16 @@ function applyDashboardFilter(filterType) {
         dashboardDateFilter.endDate = new Date(today);
         dashboardDateFilter.endDate.setHours(23, 59, 59, 999);
         filterText = 'ဒီအပတ်';
+        document.getElementById('filter-week').classList.remove('bg-blue-100');
+        document.getElementById('filter-week').classList.add('bg-yellow-400');
     } else if (filterType === 'month') {
         const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         dashboardDateFilter.startDate = new Date(startOfMonth);
         dashboardDateFilter.endDate = new Date(today);
         dashboardDateFilter.endDate.setHours(23, 59, 59, 999);
         filterText = 'ဒီလ';
+        document.getElementById('filter-month').classList.remove('bg-blue-100');
+        document.getElementById('filter-month').classList.add('bg-yellow-400');
     } else if (filterType === 'custom') {
         const startInput = document.getElementById('dashboard-start-date').value;
         const endInput = document.getElementById('dashboard-end-date').value;
@@ -117,6 +131,12 @@ function clearDashboardFilter() {
     dashboardDateFilter.type = 'all';
     dashboardDateFilter.startDate = null;
     dashboardDateFilter.endDate = null;
+    
+    // Remove active class from all filter buttons
+    document.querySelectorAll('.dashboard-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-yellow-400');
+        btn.classList.add('bg-blue-100');
+    });
     
     document.getElementById('dashboard-filter-status').classList.add('hidden');
     document.getElementById('clear-dashboard-filter').classList.add('hidden');

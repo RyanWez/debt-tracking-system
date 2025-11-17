@@ -34,12 +34,12 @@ function showCustomerDetail(customerId) {
         customerPayments.map(payment => `
             <div class="payment-item bg-green-50 p-3 border-3 border-black">
                 <div class="flex justify-between">
-                    <div class="font-bold">ငွေရှင်းဝင်</div>
+                    <div class="font-bold">ပြန်ဆပ်ငွေ</div>
                     <div class="font-black text-green-600">${formatCurrency(payment.amount)}</div>
                 </div>
                 <div class="text-xs mt-1 text-gray-600">${formatDate(payment.createdAt)}</div>
             </div>
-        `).join('') : '<div class="text-center text-gray-500 py-4">ငွေရှင်းတာမရှိသေးပါ</div>';
+        `).join('') : '<div class="text-center text-gray-500 py-4">ပြန်ဆပ်တာမရှိသေးပါ</div>';
 
     document.getElementById('customer-modal').classList.remove('hidden');
 }

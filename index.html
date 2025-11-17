@@ -45,7 +45,7 @@
                         📝<br>ကြွေးမှတ်ရန်
                     </button>
                     <button onclick="showView('payments')" class="nav-btn py-2 text-xs" id="nav-payments">
-                        💰<br>ငွေရှင်းရန်
+                        💰<br>ပြန်ဆပ်ငွေ မှတ်ရန်
                     </button>
                     <button onclick="showView('settings')" class="nav-btn py-2 text-xs" id="nav-settings">
                         ⚙️<br>Settings
@@ -68,16 +68,16 @@
                         </button>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mb-3">
-                        <button onclick="applyDashboardFilter('today')" class="brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                        <button id="filter-today" onclick="applyDashboardFilter('today')" class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
                             ဒီနေ့
                         </button>
-                        <button onclick="applyDashboardFilter('yesterday')" class="brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                        <button id="filter-yesterday" onclick="applyDashboardFilter('yesterday')" class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
                             မနေ့က
                         </button>
-                        <button onclick="applyDashboardFilter('week')" class="brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                        <button id="filter-week" onclick="applyDashboardFilter('week')" class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
                             ဒီအပတ်
                         </button>
-                        <button onclick="applyDashboardFilter('month')" class="brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                        <button id="filter-month" onclick="applyDashboardFilter('month')" class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
                             ဒီလ
                         </button>
                     </div>
@@ -136,7 +136,7 @@
                 <!-- Transactions -->
                 <div class="brutalist-card bg-white p-4">
                     <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">
-                        <span id="transactions-title">🕐 ဒီနေ့ငွေရှင်းစာရင်း</span>
+                        <span id="transactions-title">🕐 ဒီနေ့ ပြန်ဆပ်ငွေစာရင်း</span>
                     </h2>
                     <div id="today-transactions" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
                         <!-- Populated by JS -->
@@ -229,7 +229,7 @@
             <div id="view-payments" class="view-content hidden">
                 <!-- Add Payment Form -->
                 <div class="brutalist-card gradient-teal p-4 mb-6 animate-slideInUp">
-                    <h2 class="text-lg font-black mb-3">💰 ငွေရှင်းတာမှတ်မယ်</h2>
+                    <h2 class="text-lg font-black mb-3">💰 တာမှတ်မယ်</h2>
                     <form id="add-payment-form" class="space-y-3">
                         <div class="custom-dropdown" id="payment-customer-dropdown">
                             <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty" id="payment-customer-btn">
@@ -268,7 +268,7 @@
 
                 <!-- Recent Payments -->
                 <div class="brutalist-card bg-white p-4">
-                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">💵 နောက်ဆုံးငွေရှင်းစာရင်း</h2>
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">💵 နောက်ဆုံး ပြန်ဆပ်ငွေစာရင်း</h2>
                     <!-- Payment Search -->
                     <div class="mb-4">
                         <input type="text" id="payment-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..." 
@@ -342,11 +342,11 @@
                             <span class="font-black" id="settings-customers-count">0</span>
                         </div>
                         <div class="flex justify-between p-3 bg-red-50 border-2 border-black">
-                            <span class="font-bold">📝 ကြွေးမှတ်တမ်း</span>
+                            <span class="font-bold">📝 အကြွေးမှတ်တမ်း</span>
                             <span class="font-black" id="settings-debts-count">0</span>
                         </div>
                         <div class="flex justify-between p-3 bg-green-50 border-2 border-black">
-                            <span class="font-bold">💰 ငွေရှင်းမှတ်တမ်း</span>
+                            <span class="font-bold">💰 ပြန်ဆပ်ငွေ မှတ်တမ်း</span>
                             <span class="font-black" id="settings-payments-count">0</span>
                         </div>
                     </div>
@@ -380,7 +380,7 @@
                     <div id="modal-debts" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar"></div>
                 </div>
                 <div>
-                    <h3 class="font-black mb-2 text-lg border-b-3 border-black pb-2">ငွေရှင်းမှတ်တမ်း</h3>
+                    <h3 class="font-black mb-2 text-lg border-b-3 border-black pb-2">ပြန်ဆပ်ငွေမှတ်တမ်း</h3>
                     <div id="modal-payments" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar"></div>
                 </div>
             </div>

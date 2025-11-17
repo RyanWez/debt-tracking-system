@@ -202,7 +202,7 @@ document.getElementById('edit-payment-form').addEventListener('submit', (e) => {
     closeEditPaymentModal();
     renderRecentPayments(document.getElementById('payment-search').value || '');
     updateDashboard();
-    showToast('ငွေရှင်းမှတ်တမ်း ပြင်ဆင်ပြီးပါပြီ!', 'success');
+    showToast('ပြန်ဆပ်ငွေမှတ်တမ်း ပြင်ဆင်ပြီးပါပြီ!', 'success');
 });
 
 function openPaymentDeleteModal(paymentId) {
@@ -233,7 +233,7 @@ function confirmDeletePayment() {
     closeDeletePaymentModal();
     renderRecentPayments(document.getElementById('payment-search').value || '');
     updateDashboard();
-    showToast('ငွေရှင်းမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
+    showToast('ပြန်ဆပ်ငွေမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
     currentPaymentId = null;
 }
 
