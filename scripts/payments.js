@@ -10,6 +10,34 @@ document.addEventListener('DOMContentLoaded', () => {
         allowInput: true,
         locale: {
             firstDayOfWeek: 1
+        },
+        // Force English numbers
+        formatDate: (date) => {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        },
+        onReady: function(selectedDates, dateStr, instance) {
+            // Force Arial font on all calendar elements after creation
+            const calendar = instance.calendarContainer;
+            if (calendar) {
+                calendar.style.fontFamily = 'Arial, sans-serif';
+                const allElements = calendar.querySelectorAll('*');
+                allElements.forEach(el => {
+                    el.style.fontFamily = 'Arial, sans-serif';
+                });
+            }
+        },
+        onOpen: function(selectedDates, dateStr, instance) {
+            // Force Arial font when calendar opens
+            const calendar = instance.calendarContainer;
+            if (calendar) {
+                const yearInput = calendar.querySelector('.cur-year');
+                if (yearInput) {
+                    yearInput.style.fontFamily = 'Arial, sans-serif';
+                }
+            }
         }
     });
 
@@ -19,6 +47,34 @@ document.addEventListener('DOMContentLoaded', () => {
         allowInput: true,
         locale: {
             firstDayOfWeek: 1
+        },
+        // Force English numbers
+        formatDate: (date) => {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        },
+        onReady: function(selectedDates, dateStr, instance) {
+            // Force Arial font on all calendar elements after creation
+            const calendar = instance.calendarContainer;
+            if (calendar) {
+                calendar.style.fontFamily = 'Arial, sans-serif';
+                const allElements = calendar.querySelectorAll('*');
+                allElements.forEach(el => {
+                    el.style.fontFamily = 'Arial, sans-serif';
+                });
+            }
+        },
+        onOpen: function(selectedDates, dateStr, instance) {
+            // Force Arial font when calendar opens
+            const calendar = instance.calendarContainer;
+            if (calendar) {
+                const yearInput = calendar.querySelector('.cur-year');
+                if (yearInput) {
+                    yearInput.style.fontFamily = 'Arial, sans-serif';
+                }
+            }
         }
     });
 });
