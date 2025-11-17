@@ -1,3 +1,28 @@
+// Initialize Flatpickr for debt date
+let debtDatePicker = null;
+let editDebtDatePicker = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Add Debt Date Picker
+    debtDatePicker = flatpickr("#debt-date", {
+        dateFormat: "d/m/Y",
+        defaultDate: null,
+        allowInput: true,
+        locale: {
+            firstDayOfWeek: 1
+        }
+    });
+
+    // Edit Debt Date Picker
+    editDebtDatePicker = flatpickr("#edit-debt-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        locale: {
+            firstDayOfWeek: 1
+        }
+    });
+});
+
 // Debt Functions
 document.getElementById('add-debt-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -6,6 +31,7 @@ document.getElementById('add-debt-form').addEventListener('submit', (e) => {
     const item = document.getElementById('debt-item').value.trim();
     const amountValue = document.getElementById('debt-amount').value;
     const amount = parseInt(amountValue, 10);
+    const dateInput = document.getElementById('debt-date').value;
 
     if (!customerId) {
         showToast('ဖောက်သည်ကို အရင်ရွေးပါ၊ ပြီးမှ အကြွေးမှတ်နိုင်ပါတယ်။', 'warning');
@@ -22,18 +48,30 @@ document.getElementById('add-debt-form').addEventListener('submit', (e) => {
         return;
     }
     
+    // Determine date: use selected date or default to today
+    let debtDate;
+    if (dateInput) {
+        // Parse the date from flatpickr (format: dd/mm/yyyy)
+        const parts = dateInput.split('/');
+        debtDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    } else {
+        // Default to today
+        debtDate = new Date();
+    }
+    
     const debt = {
         id: generateId(),
         customerId,
         item,
         total: amount,
-        createdAt: new Date().toISOString()
+        createdAt: debtDate.toISOString()
     };
 
     debts.push(debt);
     saveData();
     
     e.target.reset();
+    if (debtDatePicker) debtDatePicker.clear();
     resetCustomDropdowns();
     renderRecentDebts(document.getElementById('debt-search') ? document.getElementById('debt-search').value : '');
     updateDashboard();
@@ -57,6 +95,12 @@ function openDebtEditModal(debtId) {
     document.getElementById('edit-debt-item').value = debt.item;
     document.getElementById('edit-debt-amount').value = debt.total;
 
+    // Set the date in flatpickr
+    if (editDebtDatePicker && debt.createdAt) {
+        const debtDate = new Date(debt.createdAt);
+        editDebtDatePicker.setDate(debtDate, true);
+    }
+
     document.getElementById('edit-debt-modal').classList.remove('hidden');
 }
 
@@ -71,8 +115,17 @@ document.getElementById('edit-debt-form').addEventListener('submit', (e) => {
     const index = debts.findIndex(d => d.id === debtId);
     if (index === -1) return;
 
+    const dateInput = document.getElementById('edit-debt-date').value;
+    
     debts[index].item = document.getElementById('edit-debt-item').value;
     debts[index].total = parseInt(document.getElementById('edit-debt-amount').value) || 0;
+    
+    // Update date if changed
+    if (dateInput) {
+        const parts = dateInput.split('/');
+        const debtDate = new Date(parts[2], parts[1] - 1, parts[0]);
+        debts[index].createdAt = debtDate.toISOString();
+    }
 
     saveData();
     closeEditDebtModal();

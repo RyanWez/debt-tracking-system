@@ -1,3 +1,28 @@
+// Initialize Flatpickr for payment date
+let paymentDatePicker = null;
+let editPaymentDatePicker = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Add Payment Date Picker
+    paymentDatePicker = flatpickr("#payment-date", {
+        dateFormat: "d/m/Y",
+        defaultDate: null,
+        allowInput: true,
+        locale: {
+            firstDayOfWeek: 1
+        }
+    });
+
+    // Edit Payment Date Picker
+    editPaymentDatePicker = flatpickr("#edit-payment-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        locale: {
+            firstDayOfWeek: 1
+        }
+    });
+});
+
 // Payment Functions
 document.getElementById('payment-customer').addEventListener('change', (e) => {
     const customerId = e.target.value;
@@ -16,6 +41,7 @@ document.getElementById('add-payment-form').addEventListener('submit', (e) => {
     const customerId = document.getElementById('payment-customer').value;
     const amountValue = document.getElementById('payment-amount').value;
     const amount = parseInt(amountValue, 10);
+    const dateInput = document.getElementById('payment-date').value;
 
     if (!customerId) {
         showToast('ဖောက်သည်ကို အရင်ရွေးပြီးမှ ငွေရှင်းမှတ်ပါ။', 'warning');
@@ -39,17 +65,29 @@ document.getElementById('add-payment-form').addEventListener('submit', (e) => {
         return;
     }
 
+    // Determine date: use selected date or default to today
+    let paymentDate;
+    if (dateInput) {
+        // Parse the date from flatpickr (format: dd/mm/yyyy)
+        const parts = dateInput.split('/');
+        paymentDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    } else {
+        // Default to today
+        paymentDate = new Date();
+    }
+
     const payment = {
         id: generateId(),
         customerId,
         amount,
-        createdAt: new Date().toISOString()
+        createdAt: paymentDate.toISOString()
     };
 
     payments.push(payment);
     saveData();
     
     e.target.reset();
+    if (paymentDatePicker) paymentDatePicker.clear();
     document.getElementById('customer-debt-info').classList.add('hidden');
     renderRecentPayments(document.getElementById('payment-search') ? document.getElementById('payment-search').value : '');
     updateDashboard();
@@ -72,6 +110,12 @@ function openPaymentEditModal(paymentId) {
     document.getElementById('edit-payment-customer-name').textContent = customer ? customer.name : 'Unknown';
     document.getElementById('edit-payment-amount').value = payment.amount;
 
+    // Set the date in flatpickr
+    if (editPaymentDatePicker && payment.createdAt) {
+        const paymentDate = new Date(payment.createdAt);
+        editPaymentDatePicker.setDate(paymentDate, true);
+    }
+
     document.getElementById('edit-payment-modal').classList.remove('hidden');
 }
 
@@ -87,7 +131,16 @@ document.getElementById('edit-payment-form').addEventListener('submit', (e) => {
     if (index === -1) return;
 
     const newAmount = parseInt(document.getElementById('edit-payment-amount').value) || 0;
+    const dateInput = document.getElementById('edit-payment-date').value;
+    
     payments[index].amount = newAmount;
+    
+    // Update date if changed
+    if (dateInput) {
+        const parts = dateInput.split('/');
+        const paymentDate = new Date(parts[2], parts[1] - 1, parts[0]);
+        payments[index].createdAt = paymentDate.toISOString();
+    }
 
     saveData();
     closeEditPaymentModal();
