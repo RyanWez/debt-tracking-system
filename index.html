@@ -59,6 +59,49 @@
             
             <!-- Dashboard View -->
             <div id="view-dashboard" class="view-content">
+                <!-- Date Filter -->
+                <div class="brutalist-card bg-white p-4 mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-black text-sm">📅 ရက်စွဲအလိုက် စစ်ထုတ်ရန်</h3>
+                        <button id="clear-dashboard-filter" class="text-xs font-bold text-blue-600 hidden" onclick="clearDashboardFilter()">
+                            ✕ ရှင်းမယ်
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <button onclick="applyDashboardFilter('today')" class="brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                            ဒီနေ့
+                        </button>
+                        <button onclick="applyDashboardFilter('yesterday')" class="brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                            မနေ့က
+                        </button>
+                        <button onclick="applyDashboardFilter('week')" class="brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                            ဒီအပတ်
+                        </button>
+                        <button onclick="applyDashboardFilter('month')" class="brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                            ဒီလ
+                        </button>
+                    </div>
+                    <div class="text-xs font-bold mb-2">သို့မဟုတ် ရက်စွဲအပိုင်းအခြား ရွေးပါ:</div>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <input type="text" id="dashboard-start-date" placeholder="စတဲ့ရက်..." 
+                            class="brutalist-input w-full p-2 text-sm" style="font-family: Arial, sans-serif;">
+                        <input type="text" id="dashboard-end-date" placeholder="ဆုံးရက်..." 
+                            class="brutalist-input w-full p-2 text-sm" style="font-family: Arial, sans-serif;">
+                    </div>
+                    <button onclick="applyDashboardFilter('custom')" class="brutalist-btn bg-green-500 text-white w-full py-2 text-sm font-bold">
+                        စစ်မယ်
+                    </button>
+                </div>
+
+                <!-- Filter Status -->
+                <div id="dashboard-filter-status" class="hidden brutalist-card bg-yellow-100 border-3 border-yellow-600 p-3 mb-4">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm font-bold">
+                            🔍 <span id="dashboard-filter-text"></span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Metrics Cards -->
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <div class="brutalist-card gradient-red p-4 metric-card animate-slideInUp">
@@ -90,9 +133,11 @@
                     </div>
                 </div>
 
-                <!-- Today's Transactions -->
+                <!-- Transactions -->
                 <div class="brutalist-card bg-white p-4">
-                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">🕐 ဒီနေ့ငွေရှင်းစာရင်း</h2>
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">
+                        <span id="transactions-title">🕐 ဒီနေ့ငွေရှင်းစာရင်း</span>
+                    </h2>
                     <div id="today-transactions" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
                         <!-- Populated by JS -->
                     </div>
