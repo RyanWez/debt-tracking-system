@@ -1,17 +1,24 @@
 // Customer Functions
 document.getElementById('add-customer-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const newName = document.getElementById('customer-name').value.trim();
     const newPhone = document.getElementById('customer-phone').value.trim();
-    
+
+    // Validate name characters (English, Myanmar, Numbers, Spaces only)
+    const nameRegex = /^[a-zA-Z0-9\u1000-\u109F\uAA60-\uAA7F\s]+$/;
+    if (!nameRegex.test(newName)) {
+        showToast('နာမည်မှာ အင်္ဂလိပ်၊ မြန်မာစာနဲ့ ဂဏန်းတွေပဲ ပါရပါမယ်!', 'warning');
+        return;
+    }
+
     // Check for duplicate name
     const existingCustomer = customers.find(c => c.name.toLowerCase() === newName.toLowerCase());
     if (existingCustomer) {
         showToast('ရှိပြီးသားပါ! ဒီဖောက်သည်ကို အရင်က ထည့်ထားပြီးပါပြီ', 'warning');
         return;
     }
-    
+
     const customer = {
         id: generateId(),
         name: newName,
@@ -21,7 +28,7 @@ document.getElementById('add-customer-form').addEventListener('submit', (e) => {
 
     customers.push(customer);
     saveData();
-    
+
     e.target.reset();
     renderCustomers();
     populateCustomerSelects();
@@ -33,7 +40,7 @@ function renderCustomers(searchTerm = '') {
     let filteredCustomers = customers;
 
     if (searchTerm) {
-        filteredCustomers = customers.filter(c => 
+        filteredCustomers = customers.filter(c =>
             c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             c.phone.includes(searchTerm)
         );
@@ -47,7 +54,7 @@ function renderCustomers(searchTerm = '') {
     list.innerHTML = filteredCustomers.map(customer => {
         const debt = getCustomerTotalDebt(customer.id);
         const bgColor = debt > 0 ? 'bg-red-100' : 'bg-green-100';
-        
+
         return `
             <div class="brutalist-card ${bgColor} p-4 cursor-pointer"
                  onclick="showCustomerDetail('${customer.id}')">

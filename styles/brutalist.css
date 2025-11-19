@@ -120,6 +120,15 @@
     cursor: pointer;
 }
 
+/* Fix for customer list spacing */
+#customer-list > .brutalist-card {
+    margin-bottom: 12px;
+}
+
+#customer-list > .brutalist-card:last-child {
+    margin-bottom: 0;
+}
+
 @media (hover: none) and (pointer: coarse) {
     .brutalist-btn:active {
         box-shadow: 3px 3px 0px #000;
