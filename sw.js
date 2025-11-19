@@ -1,5 +1,5 @@
 // Service Worker for Debt Tracking System PWA
-const CACHE_NAME = 'debt-tracker-v1.2';
+const CACHE_NAME = 'debt-tracker-v1.3';
 const urlsToCache = [
   './',
   './index.html',
