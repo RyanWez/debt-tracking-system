@@ -31,6 +31,7 @@
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="styles/datepicker.css">
+    <link rel="stylesheet" href="styles/pin.css">
 </head>
 <body class="bg-white min-h-screen">
     <!-- Toast Notification Container -->
@@ -52,7 +53,7 @@
 
             <!-- Navigation -->
             <nav class="p-4 pt-0">
-                <div class="grid grid-cols-4 gap-2">
+                <div class="grid grid-cols-4 gap-2 mb-2">
                     <button onclick="showView('dashboard')" class="nav-btn active py-2 text-xs" id="nav-dashboard">
                         📊<br>ပင်မစာမျက်နှာ
                     </button>
@@ -65,8 +66,13 @@
                     <button onclick="showView('payments')" class="nav-btn py-2 text-xs" id="nav-payments">
                         💰<br>ပြန်ဆပ်ငွေ မှတ်ရန်
                     </button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
                     <button onclick="showView('settings')" class="nav-btn py-2 text-xs" id="nav-settings">
                         ⚙️<br>Settings
+                    </button>
+                    <button onclick="showView('lock')" class="nav-btn py-2 text-xs" id="nav-lock">
+                        🔒<br>Lock ခတ်ရန်
                     </button>
                 </div>
             </nav>
@@ -371,6 +377,75 @@
                 </div>
             </div>
 
+            <!-- Lock View -->
+            <div id="view-lock" class="view-content hidden">
+                <!-- Lock Status Card -->
+                <div class="brutalist-card gradient-blue p-6 mb-6 animate-slideInUp">
+                    <div class="text-center mb-6">
+                        <div class="text-6xl mb-3">🔒</div>
+                        <h2 class="text-2xl font-black mb-2">လုံခြုံရေး စနစ်</h2>
+                        <p class="font-bold text-sm text-gray-700">PIN Lock System</p>
+                    </div>
+
+                    <!-- Lock Status -->
+                    <div class="brutalist-card bg-white p-4 mb-4 text-center">
+                        <div class="text-sm font-bold mb-2">Lock Status</div>
+                        <div id="lock-status-display" class="lock-status-badge unlocked mx-auto">
+                            🔓 PIN မသတ်မှတ်ရသေးပါ
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIN Management Card -->
+                <div class="brutalist-card gradient-yellow p-6 mb-6 animate-slideInUp" style="animation-delay: 0.1s">
+                    <h2 class="text-xl font-black mb-4 border-b-3 border-black pb-2">🔐 PIN Management</h2>
+                    
+                    <div class="space-y-3">
+                        <!-- Set PIN Button -->
+                        <button id="btn-set-pin" onclick="showSetPINDialog()" class="brutalist-btn bg-green-500 text-white w-full py-3 text-sm font-bold">
+                            🔑 PIN သတ်မှတ်ရန်
+                        </button>
+
+                        <!-- Change PIN Button -->
+                        <button id="btn-change-pin" onclick="showChangePINDialog()" class="brutalist-btn bg-blue-500 text-white w-full py-3 text-sm font-bold" disabled>
+                            🔄 PIN ပြောင်းရန်
+                        </button>
+
+                        <!-- Remove PIN Button -->
+                        <button id="btn-remove-pin" onclick="showRemovePINDialog()" class="brutalist-btn bg-red-500 text-white w-full py-3 text-sm font-bold" disabled>
+                            🗑️ PIN ဖျက်ရန်
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info Card -->
+                <div class="brutalist-card bg-white p-4 animate-slideInUp" style="animation-delay: 0.2s">
+                    <h3 class="font-black text-lg mb-3 border-b-3 border-black pb-2">ℹ️ အချက်အလက်</h3>
+                    <div class="space-y-2 text-sm font-bold">
+                        <div class="flex items-start gap-2">
+                            <span>•</span>
+                            <span>App ဖွင့်တိုင်း PIN ရိုက်ရမယ်</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span>•</span>
+                            <span>ဖောက်သည်ဖျက်တဲ့အခါ PIN လိုအပ်မယ်</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span>•</span>
+                            <span>Backup Restore လုပ်ရင် PIN လိုအပ်မယ်</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span>•</span>
+                            <span>PIN က 4 လုံး ဖြစ်ပါတယ်</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span>•</span>
+                            <span>3 ကြိမ် မှားရင် 30 စက္ကန့် စောင့်ရမယ်</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -610,6 +685,8 @@
     
     <script src="scripts/utils.js"></script>
     <script src="scripts/storage.js"></script>
+    <script src="scripts/pin.js"></script>
+    <script src="scripts/pin-ui.js"></script>
     <script src="scripts/customers.js"></script>
     <script src="scripts/debts.js"></script>
     <script src="scripts/payments.js"></script>

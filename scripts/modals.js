@@ -126,24 +126,27 @@ function closeDeleteModal() {
 function confirmDelete() {
     if (!currentCustomerId) return;
     
-    // Remove customer
-    customers = customers.filter(c => c.id !== currentCustomerId);
-    
-    // Remove all debts for this customer
-    debts = debts.filter(d => d.customerId !== currentCustomerId);
-    
-    // Remove all payments for this customer
-    payments = payments.filter(p => p.customerId !== currentCustomerId);
-    
-    saveData();
-    closeDeleteModal();
-    closeModal();
-    
-    // Refresh all displays
-    renderCustomers();
-    populateCustomerSelects();
-    updateDashboard();
-    
-    showToast('ဖောက်သည်နှင့် သူနဲ့ပတ်သက်သော မှတ်တမ်းများကို ဖျက်ပြီးပါပြီ!', 'info');
-    currentCustomerId = null;
+    // PIN verification for sensitive action
+    showPINVerification(() => {
+        // Remove customer
+        customers = customers.filter(c => c.id !== currentCustomerId);
+        
+        // Remove all debts for this customer
+        debts = debts.filter(d => d.customerId !== currentCustomerId);
+        
+        // Remove all payments for this customer
+        payments = payments.filter(p => p.customerId !== currentCustomerId);
+        
+        saveData();
+        closeDeleteModal();
+        closeModal();
+        
+        // Refresh all displays
+        renderCustomers();
+        populateCustomerSelects();
+        updateDashboard();
+        
+        showToast('ဖောက်သည်နှင့် သူနဲ့ပတ်သက်သော မှတ်တမ်းများကို ဖျက်ပြီးပါပြီ!', 'info');
+        currentCustomerId = null;
+    });
 }

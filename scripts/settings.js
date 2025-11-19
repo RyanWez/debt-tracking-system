@@ -142,29 +142,32 @@ function closeRestoreModal() {
 function confirmRestore() {
     if (!pendingRestoreData) return;
 
-    try {
-        customers = pendingRestoreData.customers;
-        debts = pendingRestoreData.debts;
-        payments = pendingRestoreData.payments;
-        
-        saveData();
-        updateSettingsView();
-        updateDashboard();
-        
-        closeRestoreModal();
-        
-        showToast('Restore လုပ်ပြီးပါပြီ! ဒေတာများ ပြန်လည်ရယူပြီးပါပြီ။', 'success');
-        
-        // Refresh current view
-        const activeNav = document.querySelector('.nav-btn.active');
-        if (activeNav) {
-            const viewName = activeNav.id.replace('nav-', '');
-            if (viewName !== 'settings') {
-                showView(viewName);
+    // PIN verification for sensitive action
+    showPINVerification(() => {
+        try {
+            customers = pendingRestoreData.customers;
+            debts = pendingRestoreData.debts;
+            payments = pendingRestoreData.payments;
+            
+            saveData();
+            updateSettingsView();
+            updateDashboard();
+            
+            closeRestoreModal();
+            
+            showToast('Restore လုပ်ပြီးပါပြီ! ဒေတာများ ပြန်လည်ရယူပြီးပါပြီ။', 'success');
+            
+            // Refresh current view
+            const activeNav = document.querySelector('.nav-btn.active');
+            if (activeNav) {
+                const viewName = activeNav.id.replace('nav-', '');
+                if (viewName !== 'settings') {
+                    showView(viewName);
+                }
             }
+        } catch (error) {
+            showToast('Restore လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
+            console.error('Restore error:', error);
         }
-    } catch (error) {
-        showToast('Restore လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
-        console.error('Restore error:', error);
-    }
+    });
 }
