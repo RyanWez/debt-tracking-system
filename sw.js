@@ -31,6 +31,13 @@ const urlsToCache = [
   './images/favicon.ico'
 ];
 
+// Listen for messages from the client
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Install event - cache resources
 self.addEventListener('install', event => {
   // Force the waiting service worker to become the active service worker

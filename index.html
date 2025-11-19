@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="my">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debt Tracker</title>
-    
+
     <!-- PWA Meta Tags -->
     <meta name="description" content="ကြွေးစာရင်း မှတ်တမ်း - Debt Tracking System">
     <meta name="theme-color" content="#FACC15">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Debt Tracker">
-    
+
     <!-- Icons -->
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles/fonts.css">
     <link rel="stylesheet" href="styles/animations.css">
@@ -33,13 +34,14 @@
     <link rel="stylesheet" href="styles/datepicker.css">
     <link rel="stylesheet" href="styles/pin.css">
 </head>
+
 <body class="bg-white min-h-screen">
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
     <!-- App Container -->
     <div id="app" class="max-w-md mx-auto min-h-screen bg-white">
-        
+
         <!-- Top Sticky Area: Header + Nav -->
         <div class="sticky top-0 z-40 bg-white pt-4 pb-2">
             <!-- Header -->
@@ -80,45 +82,52 @@
 
         <!-- Main Content -->
         <main class="p-4 pb-24 pt-4">
-            
+
             <!-- Dashboard View -->
             <div id="view-dashboard" class="view-content">
                 <!-- Date Filter -->
                 <div class="brutalist-card bg-white p-4 mb-4">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="font-black text-sm">📅 ရက်စွဲအလိုက် စစ်ထုတ်ရန်</h3>
-                        <button id="clear-dashboard-filter" class="text-xs font-bold text-blue-600 hidden" onclick="clearDashboardFilter()">
+                        <button id="clear-dashboard-filter" class="text-xs font-bold text-blue-600 hidden"
+                            onclick="clearDashboardFilter()">
                             ✕ ရှင်းမယ်
                         </button>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mb-3">
-                        <button id="filter-today" onclick="applyDashboardFilter('today')" class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                        <button id="filter-today" onclick="applyDashboardFilter('today')"
+                            class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
                             ဒီနေ့
                         </button>
-                        <button id="filter-yesterday" onclick="applyDashboardFilter('yesterday')" class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                        <button id="filter-yesterday" onclick="applyDashboardFilter('yesterday')"
+                            class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
                             မနေ့က
                         </button>
-                        <button id="filter-week" onclick="applyDashboardFilter('week')" class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                        <button id="filter-week" onclick="applyDashboardFilter('week')"
+                            class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
                             ဒီအပတ်
                         </button>
-                        <button id="filter-month" onclick="applyDashboardFilter('month')" class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
+                        <button id="filter-month" onclick="applyDashboardFilter('month')"
+                            class="dashboard-filter-btn brutalist-btn bg-blue-100 text-black py-2 text-xs font-bold">
                             ဒီလ
                         </button>
                     </div>
                     <div class="text-xs font-bold mb-2">သို့မဟုတ် ရက်စွဲအပိုင်းအခြား ရွေးပါ:</div>
                     <div class="grid grid-cols-2 gap-2 mb-2">
-                        <input type="text" id="dashboard-start-date" placeholder="စတဲ့ရက်..." 
+                        <input type="text" id="dashboard-start-date" placeholder="စတဲ့ရက်..."
                             class="brutalist-input w-full p-2 text-sm" style="font-family: Arial, sans-serif;">
-                        <input type="text" id="dashboard-end-date" placeholder="ဆုံးရက်..." 
+                        <input type="text" id="dashboard-end-date" placeholder="ဆုံးရက်..."
                             class="brutalist-input w-full p-2 text-sm" style="font-family: Arial, sans-serif;">
                     </div>
-                    <button onclick="applyDashboardFilter('custom')" class="brutalist-btn bg-green-500 text-white w-full py-2 text-sm font-bold">
+                    <button onclick="applyDashboardFilter('custom')"
+                        class="brutalist-btn bg-green-500 text-white w-full py-2 text-sm font-bold">
                         စစ်မယ်
                     </button>
                 </div>
 
                 <!-- Filter Status -->
-                <div id="dashboard-filter-status" class="hidden brutalist-card bg-yellow-100 border-3 border-yellow-600 p-3 mb-4">
+                <div id="dashboard-filter-status"
+                    class="hidden brutalist-card bg-yellow-100 border-3 border-yellow-600 p-3 mb-4">
                     <div class="flex items-center justify-between">
                         <div class="text-sm font-bold">
                             🔍 <span id="dashboard-filter-text"></span>
@@ -132,18 +141,21 @@
                         <div class="text-xs font-bold mb-1">📉 ကြွေးကျန်စုစုပေါင်း</div>
                         <div class="text-2xl font-black" id="total-debt">0 Ks</div>
                     </div>
-                    <div class="brutalist-card gradient-green p-4 metric-card animate-slideInUp" style="animation-delay: 0.1s">
+                    <div class="brutalist-card gradient-green p-4 metric-card animate-slideInUp"
+                        style="animation-delay: 0.1s">
                         <div class="text-xs font-bold mb-1">💵 ဒီနေ့ရငွေ</div>
                         <div class="text-2xl font-black" id="today-payment">0 Ks</div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="brutalist-card gradient-blue p-4 metric-card animate-slideInUp" style="animation-delay: 0.2s">
+                    <div class="brutalist-card gradient-blue p-4 metric-card animate-slideInUp"
+                        style="animation-delay: 0.2s">
                         <div class="text-xs font-bold mb-1">👥 ဖောက်သည် ဦးရေ</div>
                         <div class="text-2xl font-black" id="total-customers">0</div>
                     </div>
-                    <div class="brutalist-card gradient-purple p-4 metric-card animate-slideInUp" style="animation-delay: 0.3s">
+                    <div class="brutalist-card gradient-purple p-4 metric-card animate-slideInUp"
+                        style="animation-delay: 0.3s">
                         <div class="text-xs font-bold mb-1">📅 လစဉ်အကြွေး</div>
                         <div class="text-2xl font-black" id="month-debt">0 Ks</div>
                     </div>
@@ -151,7 +163,8 @@
 
                 <!-- Top Debtors -->
                 <div class="brutalist-card gradient-orange p-4 mb-6 animate-slideInUp" style="animation-delay: 0.4s">
-                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">📈 အကြွေးအများဆုံး ဖောက်သည်များ</h2>
+                    <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">📈 အကြွေးအများဆုံး ဖောက်သည်များ
+                    </h2>
                     <div id="top-debtors" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
                         <!-- Populated by JS -->
                     </div>
@@ -174,9 +187,9 @@
                 <div class="brutalist-card gradient-yellow p-4 mb-6 animate-slideInUp">
                     <h2 class="text-lg font-black mb-3">➕ ဖောက်သည် အသစ်ထည့်မယ်</h2>
                     <form id="add-customer-form" class="space-y-3">
-                        <input type="text" id="customer-name" placeholder="အမည် (ထည့်ရန်လို)" 
+                        <input type="text" id="customer-name" placeholder="အမည် (ထည့်ရန်လို)"
                             class="brutalist-input w-full p-3" required>
-                        <input type="tel" id="customer-phone" placeholder="ဖုန်းနံပါတ် (ရှိလျှင်ထည့်ပါ)" 
+                        <input type="tel" id="customer-phone" placeholder="ဖုန်းနံပါတ် (ရှိလျှင်ထည့်ပါ)"
                             class="brutalist-input w-full p-3">
                         <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
                             သိမ်းမယ်
@@ -186,7 +199,7 @@
 
                 <!-- Search -->
                 <div class="mb-4">
-                    <input type="text" id="customer-search" placeholder="🔍 နာမည်နဲ့ရှာပါ..." 
+                    <input type="text" id="customer-search" placeholder="🔍 နာမည်နဲ့ရှာပါ..."
                         class="brutalist-input w-full p-3">
                 </div>
 
@@ -203,16 +216,15 @@
                     <h2 class="text-lg font-black mb-3">📝 ကြွေးအသစ်မှတ်မယ်</h2>
                     <form id="add-debt-form" class="space-y-3">
                         <div class="custom-dropdown" id="debt-customer-dropdown">
-                            <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty" id="debt-customer-btn">
+                            <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty"
+                                id="debt-customer-btn">
                                 <span id="debt-customer-text">ဖောက်သည်ရွေးပါ</span>
                                 <span class="dropdown-arrow">▼</span>
                             </button>
                             <div class="custom-dropdown-panel" id="debt-customer-panel">
                                 <div class="custom-dropdown-search">
-                                    <input type="text" id="debt-customer-search" 
-                                        placeholder="🔍 ရှာရန်..." 
-                                        class="w-full p-2 border-2 border-black font-bold"
-                                        autocomplete="off">
+                                    <input type="text" id="debt-customer-search" placeholder="🔍 ရှာရန်..."
+                                        class="w-full p-2 border-2 border-black font-bold" autocomplete="off">
                                 </div>
                                 <div class="custom-dropdown-list" id="debt-customer-list">
                                     <!-- Populated by JS -->
@@ -220,13 +232,14 @@
                             </div>
                         </div>
                         <input type="hidden" id="debt-customer" required>
-                        <input type="text" id="debt-item" placeholder="မှတ်စုထည့်ပါ (ဥပမာ - မုန့် 2ထုပ် + ရေ 2ဗူး)" 
+                        <input type="text" id="debt-item" placeholder="မှတ်စုထည့်ပါ (ဥပမာ - မုန့် 2ထုပ် + ရေ 2ဗူး)"
                             class="brutalist-input w-full p-3" required>
-                        <input type="number" id="debt-amount" placeholder="ပမာဏ ထည့်ပါ" 
+                        <input type="number" id="debt-amount" placeholder="ပမာဏ ထည့်ပါ"
                             class="brutalist-input w-full p-3" min="0" required style="font-family: Arial, sans-serif;">
                         <div>
-                            <label class="font-bold text-sm block mb-1">📅 ရက်စွဲ (Optional - ရက်မရွေးရင် ဒီနေ့ရက်စွဲနဲ့ မှတ်မှာဖြစ်ပါတယ်)</label>
-                            <input type="text" id="debt-date" placeholder="ရက်စွဲရွေးပါ..." 
+                            <label class="font-bold text-sm block mb-1">📅 ရက်စွဲ (Optional - ရက်မရွေးရင် ဒီနေ့ရက်စွဲနဲ့
+                                မှတ်မှာဖြစ်ပါတယ်)</label>
+                            <input type="text" id="debt-date" placeholder="ရက်စွဲရွေးပါ..."
                                 class="brutalist-input w-full p-3" style="font-family: Arial, sans-serif;">
                         </div>
                         <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
@@ -240,7 +253,7 @@
                     <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">📋 နောက်ဆုံးကြွေးမှတ်တမ်းများ</h2>
                     <!-- Debt Search -->
                     <div class="mb-4">
-                        <input type="text" id="debt-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..." 
+                        <input type="text" id="debt-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..."
                             class="brutalist-input w-full p-3">
                     </div>
                     <div id="recent-debts" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar">
@@ -256,16 +269,15 @@
                     <h2 class="text-lg font-black mb-3">💰ငွေရှင်းတာမှတ်မယ်</h2>
                     <form id="add-payment-form" class="space-y-3">
                         <div class="custom-dropdown" id="payment-customer-dropdown">
-                            <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty" id="payment-customer-btn">
+                            <button type="button" class="custom-dropdown-button brutalist-input w-full p-3 empty"
+                                id="payment-customer-btn">
                                 <span id="payment-customer-text">ဖောက်သည်ရွေးပါ</span>
                                 <span class="dropdown-arrow">▼</span>
                             </button>
                             <div class="custom-dropdown-panel" id="payment-customer-panel">
                                 <div class="custom-dropdown-search">
-                                    <input type="text" id="payment-customer-search" 
-                                        placeholder="🔍 ရှာရန်..." 
-                                        class="w-full p-2 border-2 border-black font-bold"
-                                        autocomplete="off">
+                                    <input type="text" id="payment-customer-search" placeholder="🔍 ရှာရန်..."
+                                        class="w-full p-2 border-2 border-black font-bold" autocomplete="off">
                                 </div>
                                 <div class="custom-dropdown-list" id="payment-customer-list">
                                     <!-- Populated by JS -->
@@ -277,11 +289,12 @@
                             <span class="font-bold">ပေးရန်ကျန်ငွေ: </span>
                             <span class="text-xl font-black text-red-600" id="remaining-debt">0 Ks</span>
                         </div>
-                        <input type="number" id="payment-amount" placeholder="ပေးမယ့်ပမာဏ" 
+                        <input type="number" id="payment-amount" placeholder="ပေးမယ့်ပမာဏ"
                             class="brutalist-input w-full p-3" min="0" required style="font-family: Arial, sans-serif;">
                         <div>
-                            <label class="font-bold text-sm block mb-1">📅 ရက်စွဲ (Optional - ရက်မရွေးရင် ဒီနေ့ရက်စွဲနဲ့ မှတ်မှာဖြစ်ပါတယ်)</label>
-                            <input type="text" id="payment-date" placeholder="ရက်စွဲရွေးပါ..." 
+                            <label class="font-bold text-sm block mb-1">📅 ရက်စွဲ (Optional - ရက်မရွေးရင် ဒီနေ့ရက်စွဲနဲ့
+                                မှတ်မှာဖြစ်ပါတယ်)</label>
+                            <input type="text" id="payment-date" placeholder="ရက်စွဲရွေးပါ..."
                                 class="brutalist-input w-full p-3" style="font-family: Arial, sans-serif;">
                         </div>
                         <button type="submit" class="brutalist-btn bg-black text-white w-full py-3">
@@ -295,7 +308,7 @@
                     <h2 class="text-lg font-black mb-3 border-b-3 border-black pb-2">💵 နောက်ဆုံး ပြန်ဆပ်ငွေစာရင်း</h2>
                     <!-- Payment Search -->
                     <div class="mb-4">
-                        <input type="text" id="payment-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..." 
+                        <input type="text" id="payment-search" placeholder="🔍 ဖောက်သည်နာမည်နဲ့ရှာပါ..."
                             class="brutalist-input w-full p-3">
                     </div>
                     <div id="recent-payments" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar">
@@ -337,7 +350,8 @@
                                 Backup လုပ်ထားသော ဖိုင်မှ ဒေတာများကို ပြန်လည်ရယူပါ။
                             </p>
                             <input type="file" id="restore-file" accept=".json" class="hidden">
-                            <button onclick="document.getElementById('restore-file').click()" class="brutalist-btn bg-green-500 text-white w-full py-3">
+                            <button onclick="document.getElementById('restore-file').click()"
+                                class="brutalist-btn bg-green-500 text-white w-full py-3">
                                 📂 Restore လုပ်မယ်
                             </button>
                         </div>
@@ -349,7 +363,8 @@
                                 <div>
                                     <p class="font-black text-sm mb-1">သတိပြုရန်</p>
                                     <p class="text-xs font-bold text-gray-700">
-                                        Restore လုပ်ရင် လက်ရှိ ဒေတာအားလုံး ပျောက်သွားပြီး backup မှ ဒေတာများနဲ့ အစားထိုးမှာ ဖြစ်ပါတယ်။
+                                        Restore လုပ်ရင် လက်ရှိ ဒေတာအားလုံး ပျောက်သွားပြီး backup မှ ဒေတာများနဲ့
+                                        အစားထိုးမှာ ဖြစ်ပါတယ်။
                                     </p>
                                 </div>
                             </div>
@@ -403,20 +418,23 @@
                 <!-- PIN Management Card -->
                 <div class="brutalist-card gradient-yellow p-6 mb-6 animate-slideInUp" style="animation-delay: 0.1s">
                     <h2 class="text-xl font-black mb-4 border-b-3 border-black pb-2">🔐 PIN Management</h2>
-                    
+
                     <div class="space-y-3">
                         <!-- Set PIN Button -->
-                        <button id="btn-set-pin" onclick="showSetPINDialog()" class="brutalist-btn bg-green-500 text-white w-full py-3 text-sm font-bold">
+                        <button id="btn-set-pin" onclick="showSetPINDialog()"
+                            class="brutalist-btn bg-green-500 text-white w-full py-3 text-sm font-bold">
                             🔑 PIN သတ်မှတ်ရန်
                         </button>
 
                         <!-- Change PIN Button -->
-                        <button id="btn-change-pin" onclick="showChangePINDialog()" class="brutalist-btn bg-blue-500 text-white w-full py-3 text-sm font-bold" disabled>
+                        <button id="btn-change-pin" onclick="showChangePINDialog()"
+                            class="brutalist-btn bg-blue-500 text-white w-full py-3 text-sm font-bold" disabled>
                             🔄 PIN ပြောင်းရန်
                         </button>
 
                         <!-- Remove PIN Button -->
-                        <button id="btn-remove-pin" onclick="showRemovePINDialog()" class="brutalist-btn bg-red-500 text-white w-full py-3 text-sm font-bold" disabled>
+                        <button id="btn-remove-pin" onclick="showRemovePINDialog()"
+                            class="brutalist-btn bg-red-500 text-white w-full py-3 text-sm font-bold" disabled>
                             🗑️ PIN ဖျက်ရန်
                         </button>
                     </div>
@@ -450,7 +468,8 @@
     </div>
 
     <!-- Customer Detail Modal -->
-    <div id="customer-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 p-4 overflow-y-auto modal-backdrop">
+    <div id="customer-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 p-4 overflow-y-auto modal-backdrop">
         <div class="max-w-md mx-auto mt-10 mb-10">
             <div class="brutalist-card bg-white p-6">
                 <div class="flex justify-between items-start mb-4">
@@ -459,9 +478,12 @@
                         <p class="font-bold" id="modal-customer-phone"></p>
                     </div>
                     <div class="flex gap-2 items-start">
-                        <button onclick="editCustomer()" class="brutalist-btn bg-blue-400 text-white px-3 py-2 text-xs">✏️ Edit</button>
-                        <button onclick="deleteCustomer()" class="brutalist-btn bg-red-400 text-white px-3 py-2 text-xs">🗑️ Del</button>
-                        <button onclick="closeModal()" class="brutalist-btn bg-gray-400 text-white px-3 py-2 text-xs">✕</button>
+                        <button onclick="editCustomer()"
+                            class="brutalist-btn bg-blue-400 text-white px-3 py-2 text-xs">✏️ Edit</button>
+                        <button onclick="deleteCustomer()"
+                            class="brutalist-btn bg-red-400 text-white px-3 py-2 text-xs">🗑️ Del</button>
+                        <button onclick="closeModal()"
+                            class="brutalist-btn bg-gray-400 text-white px-3 py-2 text-xs">✕</button>
                     </div>
                 </div>
                 <div class="brutalist-card bg-red-100 p-4 mb-4">
@@ -496,8 +518,10 @@
                         <input type="tel" id="edit-customer-phone" class="brutalist-input w-full p-3">
                     </div>
                     <div class="flex gap-2 pt-2">
-                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅ သိမ်းမယ်</button>
-                        <button type="button" onclick="closeEditModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅
+                            သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditModal()"
+                            class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
                     </div>
                 </form>
             </div>
@@ -518,11 +542,14 @@
                     <div class="font-bold text-sm text-gray-600" id="delete-customer-phone"></div>
                 </div>
                 <div class="bg-yellow-100 border-3 border-black p-3 mb-4">
-                    <p class="text-xs font-bold text-center">⚠️ ဖောက်သည်ကို ဖျက်လိုက်ရင် သူနဲ့ ပတ်သက်တဲ့ ကြွေးစာရင်းတွေ၊ ငွေရှင်းမှတ်တမ်းတွေ အားလုံး ပျောက်သွားမှာပါ!</p>
+                    <p class="text-xs font-bold text-center">⚠️ ဖောက်သည်ကို ဖျက်လိုက်ရင် သူနဲ့ ပတ်သက်တဲ့ ကြွေးစာရင်းတွေ၊
+                        ငွေရှင်းမှတ်တမ်းတွေ အားလုံး ပျောက်သွားမှာပါ!</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="confirmDelete()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️ ဖျက်ပစ်မယ်</button>
-                    <button onclick="closeDeleteModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                    <button onclick="confirmDelete()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️
+                        ဖျက်ပစ်မယ်</button>
+                    <button onclick="closeDeleteModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌
+                        မဖျက်တော့ဘူး</button>
                 </div>
             </div>
         </div>
@@ -545,16 +572,19 @@
                     </div>
                     <div>
                         <label class="font-bold text-sm block mb-1">ပမာဏ (Ks)</label>
-                        <input type="number" id="edit-debt-amount" class="brutalist-input w-full p-3" min="0" required style="font-family: Arial, sans-serif;">
+                        <input type="number" id="edit-debt-amount" class="brutalist-input w-full p-3" min="0" required
+                            style="font-family: Arial, sans-serif;">
                     </div>
                     <div>
                         <label class="font-bold text-sm block mb-1">📅 ရက်စွဲ</label>
-                        <input type="text" id="edit-debt-date" placeholder="ရက်စွဲရွေးပါ..." 
+                        <input type="text" id="edit-debt-date" placeholder="ရက်စွဲရွေးပါ..."
                             class="brutalist-input w-full p-3" style="font-family: Arial, sans-serif;">
                     </div>
                     <div class="flex gap-2 pt-2">
-                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅ သိမ်းမယ်</button>
-                        <button type="button" onclick="closeEditDebtModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅
+                            သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditDebtModal()"
+                            class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
                     </div>
                 </form>
             </div>
@@ -572,8 +602,10 @@
                 </div>
                 <div class="brutalist-card bg-white p-3 mb-4" id="delete-debt-summary"></div>
                 <div class="flex gap-2">
-                    <button onclick="confirmDeleteDebt()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️ ဖျက်မယ်</button>
-                    <button onclick="closeDeleteDebtModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                    <button onclick="confirmDeleteDebt()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️
+                        ဖျက်မယ်</button>
+                    <button onclick="closeDeleteDebtModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌
+                        မဖျက်တော့ဘူး</button>
                 </div>
             </div>
         </div>
@@ -592,16 +624,19 @@
                     </div>
                     <div>
                         <label class="font-bold text-sm block mb-1">ပမာဏ (Ks)</label>
-                        <input type="number" id="edit-payment-amount" class="brutalist-input w-full p-3" min="0" required style="font-family: Arial, sans-serif;">
+                        <input type="number" id="edit-payment-amount" class="brutalist-input w-full p-3" min="0"
+                            required style="font-family: Arial, sans-serif;">
                     </div>
                     <div>
                         <label class="font-bold text-sm block mb-1">📅 ရက်စွဲ</label>
-                        <input type="text" id="edit-payment-date" placeholder="ရက်စွဲရွေးပါ..." 
+                        <input type="text" id="edit-payment-date" placeholder="ရက်စွဲရွေးပါ..."
                             class="brutalist-input w-full p-3" style="font-family: Arial, sans-serif;">
                     </div>
                     <div class="flex gap-2 pt-2">
-                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅ သိမ်းမယ်</button>
-                        <button type="button" onclick="closeEditPaymentModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅
+                            သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditPaymentModal()"
+                            class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
                     </div>
                 </form>
             </div>
@@ -619,22 +654,25 @@
                 </div>
                 <div class="brutalist-card bg-white p-3 mb-4" id="delete-payment-summary"></div>
                 <div class="flex gap-2">
-                    <button onclick="confirmDeletePayment()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️ ဖျက်မယ်</button>
-                    <button onclick="closeDeletePaymentModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                    <button onclick="confirmDeletePayment()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️
+                        ဖျက်မယ်</button>
+                    <button onclick="closeDeletePaymentModal()"
+                        class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Restore Confirmation Modal -->
-    <div id="restore-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 overflow-y-auto modal-backdrop">
+    <div id="restore-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 overflow-y-auto modal-backdrop">
         <div class="max-w-md mx-auto mt-10 mb-10">
             <div class="brutalist-card gradient-blue p-6">
                 <div class="text-center mb-4">
                     <div class="text-6xl mb-3">🌐</div>
                     <h2 class="text-xl font-black mb-2">Backup Data ကို Restore လုပ်မလား?</h2>
                 </div>
-                
+
                 <!-- Backup Info -->
                 <div class="brutalist-card bg-white p-4 mb-4">
                     <div class="text-sm font-bold mb-3 border-b-2 border-black pb-2">📋 Backup အချက်အလက်</div>
@@ -673,8 +711,205 @@
 
                 <!-- Buttons -->
                 <div class="flex gap-2">
-                    <button onclick="confirmRestore()" class="brutalist-btn bg-green-600 text-white w-full py-3">✅ OK</button>
-                    <button onclick="closeRestoreModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ Cancel</button>
+                    <button onclick="confirmRestore()" class="brutalist-btn bg-green-600 text-white w-full py-3">✅
+                        OK</button>
+                    <button onclick="closeRestoreModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌
+                        Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flatpickr JS -->
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">သတိပေးချက်!</h2>
+                    <p class="font-bold text-sm">ဒီဖောက်သည်ကို ဖျက်ပစ်မှာ သေချာပါသလား?</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4">
+                    <div class="font-black" id="delete-customer-name"></div>
+                    <div class="font-bold text-sm text-gray-600" id="delete-customer-phone"></div>
+                </div>
+                <div class="bg-yellow-100 border-3 border-black p-3 mb-4">
+                    <p class="text-xs font-bold text-center">⚠️ ဖောက်သည်ကို ဖျက်လိုက်ရင် သူနဲ့ ပတ်သက်တဲ့ ကြွေးစာရင်းတွေ၊
+                        ငွေရှင်းမှတ်တမ်းတွေ အားလုံး ပျောက်သွားမှာပါ!</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDelete()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️
+                        ဖျက်ပစ်မယ်</button>
+                    <button onclick="closeDeleteModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌
+                        မဖျက်တော့ဘူး</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Debt Modal -->
+    <div id="edit-debt-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-pink p-6">
+                <h2 class="text-xl font-black mb-4 text-center">✏️ ကြွေးစာရင်း ပြင်မယ်</h2>
+                <form id="edit-debt-form" class="space-y-3">
+                    <input type="hidden" id="edit-debt-id">
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ဖောက်သည်</label>
+                        <div class="brutalist-card bg-white p-3" id="edit-debt-customer-name"></div>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">မှတ်စု</label>
+                        <input type="text" id="edit-debt-item" class="brutalist-input w-full p-3" required>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ပမာဏ (Ks)</label>
+                        <input type="number" id="edit-debt-amount" class="brutalist-input w-full p-3" min="0" required
+                            style="font-family: Arial, sans-serif;">
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">📅 ရက်စွဲ</label>
+                        <input type="text" id="edit-debt-date" placeholder="ရက်စွဲရွေးပါ..."
+                            class="brutalist-input w-full p-3" style="font-family: Arial, sans-serif;">
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅
+                            သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditDebtModal()"
+                            class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Debt Modal -->
+    <div id="delete-debt-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">သတိပေးချက်</h2>
+                    <p class="font-bold text-sm">ဒီအကြွေးမှတ်တမ်းကို ဖျက်မှာ သေချာလား?</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4" id="delete-debt-summary"></div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDeleteDebt()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️
+                        ဖျက်မယ်</button>
+                    <button onclick="closeDeleteDebtModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌
+                        မဖျက်တော့ဘူး</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Payment Modal -->
+    <div id="edit-payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-teal p-6">
+                <h2 class="text-xl font-black mb-4 text-center">✏️ ငွေရှင်းစာရင်း ပြင်မယ်</h2>
+                <form id="edit-payment-form" class="space-y-3">
+                    <input type="hidden" id="edit-payment-id">
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ဖောက်သည်</label>
+                        <div class="brutalist-card bg-white p-3" id="edit-payment-customer-name"></div>
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">ပမာဏ (Ks)</label>
+                        <input type="number" id="edit-payment-amount" class="brutalist-input w-full p-3" min="0"
+                            required style="font-family: Arial, sans-serif;">
+                    </div>
+                    <div>
+                        <label class="font-bold text-sm block mb-1">📅 ရက်စွဲ</label>
+                        <input type="text" id="edit-payment-date" placeholder="ရက်စွဲရွေးပါ..."
+                            class="brutalist-input w-full p-3" style="font-family: Arial, sans-serif;">
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="brutalist-btn bg-green-500 text-white w-full py-3">✅
+                            သိမ်းမယ်</button>
+                        <button type="button" onclick="closeEditPaymentModal()"
+                            class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မလုပ်တော့ဘူး</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Payment Modal -->
+    <div id="delete-payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 modal-backdrop">
+        <div class="max-w-sm mx-auto mt-20">
+            <div class="brutalist-card gradient-red p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">⚠️</div>
+                    <h2 class="text-xl font-black mb-2">ငွေရှင်းမှတ်တမ်း ဖျက်မလား?</h2>
+                    <p class="font-bold text-sm">ဒီငွေရှင်းမှတ်တမ်းကို ဖျက်မလား သေချာအောင် စဉ်းစားကြည့်ပါ။</p>
+                </div>
+                <div class="brutalist-card bg-white p-3 mb-4" id="delete-payment-summary"></div>
+                <div class="flex gap-2">
+                    <button onclick="confirmDeletePayment()" class="brutalist-btn bg-red-600 text-white w-full py-3">🗑️
+                        ဖျက်မယ်</button>
+                    <button onclick="closeDeletePaymentModal()"
+                        class="brutalist-btn bg-gray-400 text-white w-full py-3">❌ မဖျက်တော့ဘူး</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Restore Confirmation Modal -->
+    <div id="restore-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] p-4 overflow-y-auto modal-backdrop">
+        <div class="max-w-md mx-auto mt-10 mb-10">
+            <div class="brutalist-card gradient-blue p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">🌐</div>
+                    <h2 class="text-xl font-black mb-2">Backup Data ကို Restore လုပ်မလား?</h2>
+                </div>
+
+                <!-- Backup Info -->
+                <div class="brutalist-card bg-white p-4 mb-4">
+                    <div class="text-sm font-bold mb-3 border-b-2 border-black pb-2">📋 Backup အချက်အလက်</div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="font-bold">📅 Backup ရက်စွဲ:</span>
+                            <span class="font-black" id="restore-backup-date">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold">👥 ဖောက်သည်:</span>
+                            <span class="font-black text-blue-600" id="restore-customers-count">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold">📝 ကြွေးမှတ်တမ်း:</span>
+                            <span class="font-black text-red-600" id="restore-debts-count">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold">💰 ငွေရှင်းမှတ်တမ်း:</span>
+                            <span class="font-black text-green-600" id="restore-payments-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warning -->
+                <div class="brutalist-card bg-yellow-100 border-4 border-yellow-600 p-4 mb-4">
+                    <div class="flex gap-3">
+                        <div class="text-2xl">⚠️</div>
+                        <div>
+                            <p class="font-black text-sm mb-1">သတိပြုရန်!</p>
+                            <p class="text-xs font-bold text-gray-700">
+                                လက်ရှိ ဒေတာအားလုံး ပျောက်သွားပြီး backup မှ ဒေတာများနဲ့ အစားထိုးမှာပါ။ ဆက်လုပ်မလား?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-2">
+                    <button onclick="confirmRestore()" class="brutalist-btn bg-green-600 text-white w-full py-3">✅
+                        OK</button>
+                    <button onclick="closeRestoreModal()" class="brutalist-btn bg-gray-400 text-white w-full py-3">❌
+                        Cancel</button>
                 </div>
             </div>
         </div>
@@ -682,7 +917,7 @@
 
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
+
     <script src="scripts/utils.js"></script>
     <script src="scripts/storage.js"></script>
     <script src="scripts/pin.js"></script>
@@ -695,20 +930,70 @@
     <script src="scripts/dropdown.js"></script>
     <script src="scripts/settings.js"></script>
     <script src="scripts/app.js"></script>
-    
-    <!-- PWA Service Worker Registration -->
+
+    <!-- PWA Service Worker Registration & Update Logic -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered successfully:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Service Worker registration failed:', error);
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('Service Worker registered:', registration.scope);
+
+                    // Check for updates immediately
+                    registration.update();
+
+                    // Listen for new service worker installation
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New update available
+                                showUpdateToast();
+                            }
+                        });
                     });
+                }).catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+
+                // Handle controller change (when new SW takes over)
+                let refreshing;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (refreshing) return;
+                    window.location.reload();
+                    refreshing = true;
+                });
             });
+        }
+
+        function showUpdateToast() {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 left-4 right-4 bg-black text-white p-4 rounded-lg shadow-lg z-50 flex justify-between items-center animate-slideInUp';
+            toast.innerHTML = `
+                <div>
+                    <p class="font-bold text-sm">Update Available! 🚀</p>
+                    <p class="text-xs text-gray-300">ဗားရှင်းအသစ် ရပါပြီ။</p>
+                </div>
+                <button onclick="updateApp()" class="bg-yellow-400 text-black px-3 py-1 rounded font-bold text-xs">
+                    Update
+                </button>
+            `;
+            document.body.appendChild(toast);
+        }
+
+        function updateApp() {
+            if (navigator.serviceWorker.controller) {
+                // Send message to SW to skip waiting
+                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                // Also try to re-register to trigger update
+                navigator.serviceWorker.getRegistration().then(reg => {
+                    if (reg && reg.waiting) {
+                        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    }
+                });
+                window.location.reload();
+            }
         }
     </script>
 </body>
+
 </html>
