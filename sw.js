@@ -1,5 +1,5 @@
 // Service Worker for Debt Tracking System PWA
-const CACHE_NAME = 'debt-tracker-v1';
+const CACHE_NAME = 'debt-tracker-v1.1';
 const urlsToCache = [
   './',
   './index.html',
@@ -33,6 +33,9 @@ const urlsToCache = [
 
 // Install event - cache resources
 self.addEventListener('install', event => {
+  // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
+
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -53,12 +56,15 @@ self.addEventListener('fetch', event => {
         }
         return fetch(event.request);
       }
-    )
+      )
   );
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
+  // Claim any clients immediately, so they don't have to reload to be controlled
+  event.waitUntil(clients.claim());
+
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
