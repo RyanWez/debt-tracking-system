@@ -9,7 +9,7 @@ function updateSettingsView() {
 function backupData() {
     // Check if there's any data to backup
     if (customers.length === 0 && debts.length === 0 && payments.length === 0) {
-        showToast('Backup လုပ်ဖို့ Data တစ်ခုမှ မရှိသေးပါ! အရင်ဆုံး Data ထည့်ပါ။', 'error', 4000);
+        showToast('Backup လုပ်ဖို့ Data တစ်ခုမှ မရှိသေးပါ! အရင်ဆုံး Data ထည့်ပါ။', 'error', 2000);
         return;
     }
 

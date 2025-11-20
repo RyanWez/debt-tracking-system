@@ -107,7 +107,7 @@ function deleteCustomer() {
     // Check if customer has outstanding debt
     const customerDebt = getCustomerTotalDebt(customer.id);
     if (customerDebt > 0) {
-        showToast('အကြွေးပေးရန် ကျန်နေသေးတဲ့အတွက် ဖျက်လို့ မရပါ!', 'error', 4000);
+        showToast('အကြွေးပေးရန် ကျန်နေသေးတဲ့အတွက် ဖျက်လို့ မရပါ!', 'error');
         return;
     }
     
