@@ -42,8 +42,7 @@ self.addEventListener('message', (event) => {
 
 // Install event - cache resources
 self.addEventListener('install', event => {
-  // Force the waiting service worker to become the active service worker
-  self.skipWaiting();
+
 
   event.waitUntil(
     caches.open(CACHE_NAME)
