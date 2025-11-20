@@ -1,5 +1,5 @@
 // Service Worker for Debt Tracking System PWA
-const CACHE_NAME = 'debt-tracker-v1.3';
+const CACHE_NAME = 'debt-tracker-v1.4';
 const urlsToCache = [
   './',
   './index.html',
@@ -22,6 +22,8 @@ const urlsToCache = [
   './scripts/dropdown.js',
   './scripts/settings.js',
   './scripts/app.js',
+  './scripts/pin.js',
+  './scripts/pin-ui.js',
   './images/logo.svg',
   './images/android-chrome-192x192.png',
   './images/android-chrome-512x512.png',
@@ -52,18 +54,27 @@ self.addEventListener('install', event => {
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - Network First, Fallback to Cache
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // Cache hit - return response
-        if (response) {
+        if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
-        return fetch(event.request);
-      }
-      )
+
+        const responseToCache = response.clone();
+
+        caches.open(CACHE_NAME)
+          .then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });
 
