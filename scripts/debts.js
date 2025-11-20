@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const year = date.getFullYear();
             return `${day}/${month}/${year}`;
         },
-        onReady: function(selectedDates, dateStr, instance) {
+        onReady: function (selectedDates, dateStr, instance) {
             // Force Arial font on all calendar elements after creation
             const calendar = instance.calendarContainer;
             if (calendar) {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         },
-        onOpen: function(selectedDates, dateStr, instance) {
+        onOpen: function (selectedDates, dateStr, instance) {
             // Force Arial font when calendar opens
             const calendar = instance.calendarContainer;
             if (calendar) {
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const year = date.getFullYear();
             return `${day}/${month}/${year}`;
         },
-        onReady: function(selectedDates, dateStr, instance) {
+        onReady: function (selectedDates, dateStr, instance) {
             // Force Arial font on all calendar elements after creation
             const calendar = instance.calendarContainer;
             if (calendar) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         },
-        onOpen: function(selectedDates, dateStr, instance) {
+        onOpen: function (selectedDates, dateStr, instance) {
             // Force Arial font when calendar opens
             const calendar = instance.calendarContainer;
             if (calendar) {
@@ -103,7 +103,7 @@ document.getElementById('add-debt-form').addEventListener('submit', (e) => {
         showToast('ပမာဏကို မှန်ကန်အောင် ထည့်ပေးပါ။', 'warning');
         return;
     }
-    
+
     // Determine date: use selected date or default to today
     let debtDate;
     if (dateInput) {
@@ -114,7 +114,7 @@ document.getElementById('add-debt-form').addEventListener('submit', (e) => {
         // Default to today
         debtDate = new Date();
     }
-    
+
     const debt = {
         id: generateId(),
         customerId,
@@ -125,7 +125,7 @@ document.getElementById('add-debt-form').addEventListener('submit', (e) => {
 
     debts.push(debt);
     saveData();
-    
+
     e.target.reset();
     if (debtDatePicker) debtDatePicker.clear();
     resetCustomDropdowns();
@@ -160,10 +160,12 @@ function openDebtEditModal(debtId) {
     document.getElementById('edit-debt-modal').classList.remove('hidden');
 }
 
+
 function closeEditDebtModal() {
     document.getElementById('edit-debt-modal').classList.add('hidden');
     currentDebtId = null;
 }
+
 
 document.getElementById('edit-debt-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -172,10 +174,10 @@ document.getElementById('edit-debt-form').addEventListener('submit', (e) => {
     if (index === -1) return;
 
     const dateInput = document.getElementById('edit-debt-date').value;
-    
+
     debts[index].item = document.getElementById('edit-debt-item').value;
     debts[index].total = parseInt(document.getElementById('edit-debt-amount').value) || 0;
-    
+
     // Update date if changed
     if (dateInput) {
         const parts = dateInput.split('/');
@@ -207,10 +209,12 @@ function openDebtDeleteModal(debtId) {
     document.getElementById('delete-debt-modal').classList.remove('hidden');
 }
 
+
 function closeDeleteDebtModal() {
     document.getElementById('delete-debt-modal').classList.add('hidden');
     currentDebtId = null;
 }
+
 
 function confirmDeleteDebt() {
     if (!currentDebtId) return;
@@ -222,6 +226,7 @@ function confirmDeleteDebt() {
     showToast('အကြွေးမှတ်တမ်း ဖျက်ပြီးပါပြီ!', 'info');
     currentDebtId = null;
 }
+
 
 function renderRecentDebts(searchTerm = '') {
     const list = document.getElementById('recent-debts');
@@ -258,10 +263,17 @@ function renderRecentDebts(searchTerm = '') {
                 </div>
                 <div class="font-bold text-sm mb-2">${debt.item}</div>
                 <div class="flex justify-end gap-2 text-xs font-bold">
-                    <button class="brutalist-btn bg-blue-500 text-white px-3 py-1" onclick="openDebtEditModal('${debt.id}')">Edit</button>
+
                     <button class="brutalist-btn bg-red-500 text-white px-3 py-1" onclick="openDebtDeleteModal('${debt.id}')">Del</button>
                 </div>
             </div>
         `;
     }).join('');
 }
+
+// Make functions globally accessible
+window.openDebtEditModal = openDebtEditModal;
+window.closeEditDebtModal = closeEditDebtModal;
+window.openDebtDeleteModal = openDebtDeleteModal;
+window.closeDeleteDebtModal = closeDeleteDebtModal;
+window.confirmDeleteDebt = confirmDeleteDebt;

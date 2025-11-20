@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const year = date.getFullYear();
             return `${day}/${month}/${year}`;
         },
-        onReady: function(selectedDates, dateStr, instance) {
+        onReady: function (selectedDates, dateStr, instance) {
             // Force Arial font on all calendar elements after creation
             const calendar = instance.calendarContainer;
             if (calendar) {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         },
-        onOpen: function(selectedDates, dateStr, instance) {
+        onOpen: function (selectedDates, dateStr, instance) {
             // Force Arial font when calendar opens
             const calendar = instance.calendarContainer;
             if (calendar) {
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const year = date.getFullYear();
             return `${day}/${month}/${year}`;
         },
-        onReady: function(selectedDates, dateStr, instance) {
+        onReady: function (selectedDates, dateStr, instance) {
             // Force Arial font on all calendar elements after creation
             const calendar = instance.calendarContainer;
             if (calendar) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         },
-        onOpen: function(selectedDates, dateStr, instance) {
+        onOpen: function (selectedDates, dateStr, instance) {
             // Force Arial font when calendar opens
             const calendar = instance.calendarContainer;
             if (calendar) {
@@ -93,7 +93,7 @@ document.getElementById('payment-customer').addEventListener('change', (e) => {
 
 document.getElementById('add-payment-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const customerId = document.getElementById('payment-customer').value;
     const amountValue = document.getElementById('payment-amount').value;
     const amount = parseInt(amountValue, 10);
@@ -141,7 +141,7 @@ document.getElementById('add-payment-form').addEventListener('submit', (e) => {
 
     payments.push(payment);
     saveData();
-    
+
     e.target.reset();
     if (paymentDatePicker) paymentDatePicker.clear();
     document.getElementById('customer-debt-info').classList.add('hidden');
@@ -175,10 +175,12 @@ function openPaymentEditModal(paymentId) {
     document.getElementById('edit-payment-modal').classList.remove('hidden');
 }
 
+
 function closeEditPaymentModal() {
     document.getElementById('edit-payment-modal').classList.add('hidden');
     currentPaymentId = null;
 }
+
 
 document.getElementById('edit-payment-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -188,9 +190,9 @@ document.getElementById('edit-payment-form').addEventListener('submit', (e) => {
 
     const newAmount = parseInt(document.getElementById('edit-payment-amount').value) || 0;
     const dateInput = document.getElementById('edit-payment-date').value;
-    
+
     payments[index].amount = newAmount;
-    
+
     // Update date if changed
     if (dateInput) {
         const parts = dateInput.split('/');
@@ -221,10 +223,12 @@ function openPaymentDeleteModal(paymentId) {
     document.getElementById('delete-payment-modal').classList.remove('hidden');
 }
 
+
 function closeDeletePaymentModal() {
     document.getElementById('delete-payment-modal').classList.add('hidden');
     currentPaymentId = null;
 }
+
 
 function confirmDeletePayment() {
     if (!currentPaymentId) return;
@@ -237,9 +241,10 @@ function confirmDeletePayment() {
     currentPaymentId = null;
 }
 
+
 function renderRecentPayments(searchTerm = '') {
     const list = document.getElementById('recent-payments');
-    let recentPayments = payments.slice().sort((a, b) => 
+    let recentPayments = payments.slice().sort((a, b) =>
         new Date(b.createdAt) - new Date(a.createdAt)
     );
 
@@ -270,10 +275,17 @@ function renderRecentPayments(searchTerm = '') {
                     </div>
                 </div>
                 <div class="flex justify-end gap-2 text-xs font-bold">
-                    <button class="brutalist-btn bg-blue-500 text-white px-3 py-1" onclick="openPaymentEditModal('${payment.id}')">Edit</button>
+
                     <button class="brutalist-btn bg-red-500 text-white px-3 py-1" onclick="openPaymentDeleteModal('${payment.id}')">Del</button>
                 </div>
             </div>
         `;
     }).join('');
 }
+
+// Make functions globally accessible
+window.openPaymentEditModal = openPaymentEditModal;
+window.closeEditPaymentModal = closeEditPaymentModal;
+window.openPaymentDeleteModal = openPaymentDeleteModal;
+window.closeDeletePaymentModal = closeDeletePaymentModal;
+window.confirmDeletePayment = confirmDeletePayment;
