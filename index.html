@@ -915,11 +915,16 @@
             <div class="brutalist-card bg-white p-6 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                 <div class="text-center mb-6">
                     <div class="text-6xl mb-4 animate-bounce">🚀</div>
-                    <h2 class="text-2xl font-black mb-2">Update Available</h2>
+                    <h2 class="text-2xl font-black mb-2" id="update-modal-title">Update Available</h2>
                     <p class="font-bold text-lg" id="modal-version-text">New version available.</p>
+
+                    <!-- Progress Bar Container -->
+                    <div id="update-progress-container" class="hidden update-progress-container">
+                        <div id="update-progress-fill" class="update-progress-fill"></div>
+                    </div>
                 </div>
 
-                <button onclick="updateApp()"
+                <button id="update-btn" onclick="updateApp()"
                     class="brutalist-btn bg-black text-white w-full py-4 text-lg font-bold hover:bg-gray-800 transition-colors">
                     Update Now
                 </button>
@@ -982,17 +987,42 @@
         }
 
         function updateApp() {
-            if (navigator.serviceWorker.controller) {
-                // Send message to SW to skip waiting
-                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
-                // Also try to re-register to trigger update
-                navigator.serviceWorker.getRegistration().then(reg => {
-                    if (reg && reg.waiting) {
-                        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                    }
-                });
-                window.location.reload();
-            }
+            const updateBtn = document.getElementById('update-btn');
+            const modalTitle = document.getElementById('update-modal-title');
+            const progressContainer = document.getElementById('update-progress-container');
+            const progressFill = document.getElementById('update-progress-fill');
+
+            // 1. Hide Button
+            updateBtn.style.display = 'none';
+
+            // 2. Change Title
+            modalTitle.textContent = "Updating...";
+
+            // 3. Show Progress Bar
+            progressContainer.classList.remove('hidden');
+
+            // 4. Trigger Animation (allow small delay for DOM update)
+            setTimeout(() => {
+                progressFill.style.width = '100%';
+            }, 50);
+
+            // 5. Wait 3 seconds then reload
+            setTimeout(() => {
+                if (navigator.serviceWorker.controller) {
+                    // Send message to SW to skip waiting
+                    navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                    // Also try to re-register to trigger update
+                    navigator.serviceWorker.getRegistration().then(reg => {
+                        if (reg && reg.waiting) {
+                            reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        }
+                    });
+                    window.location.reload();
+                } else {
+                    // Fallback if no controller (e.g. first load or dev)
+                    window.location.reload();
+                }
+            }, 4000);
         }
     </script>
 </body>
