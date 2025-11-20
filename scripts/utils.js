@@ -50,3 +50,29 @@ function showToast(message, type = 'success', duration = 2000) {
         }, 300);
     }, duration);
 }
+
+async function syncVersionFromSW() {
+    try {
+        const response = await fetch('./sw.js?t=' + new Date().getTime());
+        const text = await response.text();
+        const match = text.match(/const CACHE_NAME = 'debt-tracker-v(\d+\.\d+\.\d+)';/);
+
+        if (match && match[1]) {
+            const version = match[1];
+            const sidebarVersion = document.getElementById('sidebar-version');
+            const modalVersion = document.getElementById('modal-version-text');
+
+            if (sidebarVersion) {
+                sidebarVersion.textContent = `App Version: v${version}`;
+            }
+
+            if (modalVersion) {
+                modalVersion.textContent = `Version v${version} is available.`;
+            }
+        }
+    } catch (error) {
+        console.error('Failed to sync version from SW:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', syncVersionFromSW);
