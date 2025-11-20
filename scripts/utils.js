@@ -23,26 +23,26 @@ function generateId() {
 }
 
 // Toast Notification System
-function showToast(message, type = 'success', duration = 3000) {
+function showToast(message, type = 'success', duration = 2000) {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    
+
     const icons = {
         success: '✅',
         error: '❌',
         warning: '⚠️',
         info: 'ℹ️'
     };
-    
+
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `
         <div class="toast-icon">${icons[type]}</div>
         <div class="toast-message">${message}</div>
-        <div class="toast-progress"></div>
+        <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
     `;
-    
+
     container.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.classList.add('toast-out');
         setTimeout(() => {
