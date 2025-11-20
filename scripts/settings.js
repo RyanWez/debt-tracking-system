@@ -24,31 +24,31 @@ function backupData() {
 
         const dataStr = JSON.stringify(backupData, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        
+
         const url = URL.createObjectURL(dataBlob);
         const link = document.createElement('a');
         link.href = url;
-        
+
         const date = new Date();
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
-        
-        link.download = `bakery-backup-${year}-${month}-${day}-${hours}-${minutes}.json`;
-        
+
+        link.download = `debt-tracker-backup-${year}-${month}-${day}-${hours}-${minutes}.json`;
+
         // Force download
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
-        
+
         // Cleanup
         setTimeout(() => {
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         }, 100);
-        
+
         showToast('Backup ဖိုင် ဒေါင်းလုဒ် လုပ်ပြီးပါပြီ!', 'success');
     } catch (error) {
         showToast('Backup လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
@@ -74,7 +74,7 @@ document.getElementById('restore-file').addEventListener('change', (e) => {
     reader.onload = (event) => {
         try {
             const data = JSON.parse(event.target.result);
-            
+
             // Validate the backup data structure
             if (!data.customers || !data.debts || !data.payments) {
                 showToast('မှားယွင်းနေတဲ့ Backup ဖိုင် ဖြစ်ပါတယ်!', 'error');
@@ -94,17 +94,17 @@ document.getElementById('restore-file').addEventListener('change', (e) => {
 
             // Show custom restore modal with backup info
             showRestoreModal(data);
-            
+
         } catch (error) {
             showToast('Backup ဖိုင်ကို ဖတ်လို့ မရပါ! JSON ပုံစံ မမှန်ပါ။', 'error');
             console.error('Restore error:', error);
         }
     };
-    
+
     reader.onerror = () => {
         showToast('ဖိုင်ဖတ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
     };
-    
+
     reader.readAsText(file);
     e.target.value = ''; // Reset input
 });
@@ -112,7 +112,7 @@ document.getElementById('restore-file').addEventListener('change', (e) => {
 // Show Restore Modal
 function showRestoreModal(data) {
     // Format backup date
-    const backupDate = data.backupDate ? 
+    const backupDate = data.backupDate ?
         new Date(data.backupDate).toLocaleString('en-GB', {
             year: 'numeric',
             month: '2-digit',
@@ -142,32 +142,30 @@ function closeRestoreModal() {
 function confirmRestore() {
     if (!pendingRestoreData) return;
 
-    // PIN verification for sensitive action
-    showPINVerification(() => {
-        try {
-            customers = pendingRestoreData.customers;
-            debts = pendingRestoreData.debts;
-            payments = pendingRestoreData.payments;
-            
-            saveData();
-            updateSettingsView();
-            updateDashboard();
-            
-            closeRestoreModal();
-            
-            showToast('Restore လုပ်ပြီးပါပြီ! ဒေတာများ ပြန်လည်ရယူပြီးပါပြီ။', 'success');
-            
-            // Refresh current view
-            const activeNav = document.querySelector('.nav-btn.active');
-            if (activeNav) {
-                const viewName = activeNav.id.replace('nav-', '');
-                if (viewName !== 'settings') {
-                    showView(viewName);
-                }
+    // No PIN verification needed for Restore as per user request
+    try {
+        customers = pendingRestoreData.customers;
+        debts = pendingRestoreData.debts;
+        payments = pendingRestoreData.payments;
+
+        saveData();
+        updateSettingsView();
+        updateDashboard();
+
+        closeRestoreModal();
+
+        showToast('Restore လုပ်ပြီးပါပြီ! ဒေတာများ ပြန်လည်ရယူပြီးပါပြီ။', 'success');
+
+        // Refresh current view
+        const activeNav = document.querySelector('.nav-btn.active');
+        if (activeNav) {
+            const viewName = activeNav.id.replace('nav-', '');
+            if (viewName !== 'settings') {
+                showView(viewName);
             }
-        } catch (error) {
-            showToast('Restore လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
-            console.error('Restore error:', error);
         }
-    });
+    } catch (error) {
+        showToast('Restore လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
+        console.error('Restore error:', error);
+    }
 }
