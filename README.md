@@ -26,8 +26,10 @@ Debt Tracking System သည် အရောင်းဆိုင်များ�
 - 📝 **ကြွေးမှတ်တမ်း** - ကြွေးယူမှုများကို အသေးစိတ် မှတ်တမ်းတင်နိုင်ပါတယ်
 - 💰 **ငွေရှင်းစာရင်း** - ငွေပေးချေမှုများကို လွယ်ကူစွာ မှတ်သားနိုင်ပါတယ်
 - 📊 **Dashboard** - အကြွေးစုစုပေါင်း၊ ဒီနေ့ရငွေ၊ လစဉ်အကြွေး စသည့် Metrics များ
+- 🔐 **PIN Security** - App ကို PIN နံပါတ်ဖြင့် လုံခြုံစွာ ပိတ်ထားနိုင်ပါတယ်
 - 💾 **Backup & Restore** - ဒေတာများကို JSON ဖိုင်အဖြစ် သိမ်းဆည်းပြီး ပြန်လည်ရယူနိုင်ပါတယ်
 - 📱 **Mobile Responsive** - မိုဘိုင်းဖုန်းများတွင် အသုံးပြုရန် အထူးပြုလုပ်ထားပါတယ်
+- ⚡ **PWA Capable** - အင်တာနက်မရှိဘဲ အသုံးပြုနိုင်ပြီး ဖုန်းတွင် Install လုပ်နိုင်ပါတယ်
 - 🎨 **Neo-Brutalist Design** - ခေတ်မီပြီး အသုံးပြုရလွယ်ကူသော UI/UX
 - 💾 **LocalStorage** - Browser တွင် ဒေတာများကို သိမ်းဆည်းထားပါတယ် (Server မလိုပါ)
 - 🔍 **Search & Filter** - ဖောက်သည်များ၊ ကြွေးစာရင်းများကို လွယ်ကူစွာ ရှာဖွေနိုင်ပါတယ်
@@ -42,6 +44,11 @@ Debt Tracking System သည် အရောင်းဆိုင်များ�
 - No server or installation required!
 
 ### Installation
+
+#### PWA Installation
+Browser ၏ menu မှ "Add to Home Screen" သို့မဟုတ် "Install App" ကို နှိပ်ပြီး ဖုန်းတွင် Application တစ်ခုကဲ့သို့ အသုံးပြုနိုင်ပါသည်။
+
+#### Local Development
 
 1. Clone the repository
 ```bash
@@ -73,6 +80,8 @@ cd debt-tracking-system
 ```
 debt-tracking-system/
 ├── index.html              # Main HTML file
+├── sw.js                  # Service Worker (PWA)
+├── site.webmanifest       # PWA Manifest
 ├── styles/                 # CSS files
 │   ├── fonts.css          # Typography
 │   ├── animations.css     # Animations
@@ -81,6 +90,8 @@ debt-tracking-system/
 │   ├── scrollbar.css      # Custom scrollbar
 │   ├── toast.css          # Toast notifications
 │   ├── dropdown.css       # Dropdown components
+│   ├── datepicker.css     # Date picker styles
+│   ├── pin.css            # PIN lock styles
 │   └── responsive.css     # Mobile responsive
 ├── scripts/               # JavaScript files
 │   ├── utils.js          # Utility functions
@@ -92,6 +103,8 @@ debt-tracking-system/
 │   ├── modals.js         # Modal dialogs
 │   ├── dropdown.js       # Dropdown logic
 │   ├── settings.js       # Backup/restore
+│   ├── pin.js            # PIN logic
+│   ├── pin-ui.js         # PIN UI handling
 │   └── app.js            # Main app
 ├── LICENSE               # MIT License
 └── README.md            # This file
@@ -106,6 +119,8 @@ debt-tracking-system/
 - **JavaScript (Vanilla)** - Application logic
 - **TailwindCSS CDN** - Utility-first CSS framework
 - **LocalStorage API** - Client-side data storage
+- **Service Worker** - Offline functionality
+- **Flatpickr** - Date picker component
 
 ---
 
@@ -121,16 +136,19 @@ debt-tracking-system/
 
 ---
 
-## 📱 Screenshots
+## 📱 Details
 
 ### Dashboard View
-မျက်နှာပြင်ပင်မတွင် အကြွေးစုစုပေါင်း၊ ဒီနေ့ရငွေ၊ ဖောက်သည်ဦးရေ၊ လစဉ်အကြွေး စသည့် အချက်အလက်များကို တွေ့ရမှာဖြစ်ပါတယ်။
+မျက်နှာပြင် ပင်မတွင် အကြွေးစုစုပေါင်း၊ ဒီနေ့ရငွေ၊ ဖောက်သည်ဦးရေ၊ လစဉ်အကြွေး စသည့် အချက်အလက်များကို တွေ့ရမှာဖြစ်ပါတယ်။
 
 ### Customer Management
 ဖောက်သည်များကို ထည့်သွင်း၊ ပြင်ဆင်၊ ဖျက်ပစ်နိုင်ပြီး တစ်ဦးချင်းစီ၏ ကြွေးစာရင်းအသေးစိတ်ကို ကြည့်ရှုနိုင်ပါတယ်။
 
 ### Debt & Payment Tracking
 ကြွေးယူမှုများနှင့် ငွေပေးချေမှုများကို အချိန်နှင့်တစ်ပြေးညီ မှတ်တမ်းတင်နိုင်ပါတယ်။
+
+### Security
+PIN Lock စနစ်ပါဝင်သောကြောင့် သင့်ဒေတာများကို လုံခြုံစွာ သိမ်းဆည်းထားနိုင်ပါတယ်။
 
 ---
 
