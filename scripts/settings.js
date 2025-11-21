@@ -50,6 +50,11 @@ function backupData() {
         }, 100);
 
         showToast('Backup ဖိုင် ဒေါင်းလုဒ် လုပ်ပြီးပါပြီ!', 'success');
+        
+        // Update last backup reminder date to today so we don't remind again today
+        const today = new Date().toISOString().split('T')[0];
+        localStorage.setItem('bakery_last_backup_reminder', today);
+        
     } catch (error) {
         showToast('Backup လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
         console.error('Backup error:', error);
@@ -168,4 +173,24 @@ function confirmRestore() {
         showToast('Restore လုပ်တဲ့အခါ အမှားတစ်ခု ဖြစ်ပါတယ်!', 'error');
         console.error('Restore error:', error);
     }
+}
+
+// Backup Reminder Logic
+function checkBackupReminder() {
+    const lastReminderDate = localStorage.getItem('bakery_last_backup_reminder');
+    const today = new Date().toISOString().split('T')[0];
+
+    // If no reminder yet, or last reminder was not today
+    if (lastReminderDate !== today) {
+        // Check if there is any data to backup
+        if (customers.length > 0 || debts.length > 0 || payments.length > 0) {
+            document.getElementById('backup-reminder-modal').classList.remove('hidden');
+        }
+    }
+}
+
+function closeBackupReminder() {
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('bakery_last_backup_reminder', today);
+    document.getElementById('backup-reminder-modal').classList.add('hidden');
 }

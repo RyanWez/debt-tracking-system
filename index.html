@@ -1054,6 +1054,40 @@
             }, 4000);
         }
     </script>
+    <!-- Backup Reminder Modal -->
+    <div id="backup-reminder-modal" class="hidden modal-overlay z-[70] modal-backdrop">
+        <div class="modal-content max-w-sm mx-auto">
+            <div class="brutalist-card gradient-purple p-6">
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-3">💾</div>
+                    <h2 class="text-xl font-black mb-2">Backup လုပ်ရန် သတိပေးချက်</h2>
+                    <p class="font-bold text-sm text-gray-700">
+                        ဒေတာများ မပျောက်ပျက်စေရန် နေ့စဉ် Backup လုပ်ပါ။
+                    </p>
+                </div>
+                
+                <div class="brutalist-card bg-white p-3 mb-4">
+                    <p class="text-xs font-bold text-center text-gray-600">
+                        ဖုန်းပျက်ခြင်း၊ ပျောက်ခြင်းများ ဖြစ်ပေါ်ပါက ဒေတာများ ပြန်လည်ရယူနိုင်ရန် Backup ဖိုင် လိုအပ်ပါသည်။
+                        <br>
+                        Backup ပြုလုပ်ထားတဲ့ File ကို Telegram Save Message မှာ သိမ်းထားပါ။
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="backupData(); closeBackupReminder()" 
+                        class="brutalist-btn bg-blue-500 text-white w-full py-3 font-bold">
+                        💾 အခုပဲ Backup လုပ်မယ်
+                    </button>
+                    <button onclick="closeBackupReminder()" 
+                        class="brutalist-btn bg-gray-400 text-white w-full py-3 font-bold">
+                        ⏰ နောက်မှ လုပ်မယ်
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

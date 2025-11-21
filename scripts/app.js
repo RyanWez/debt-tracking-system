@@ -60,4 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     initCustomDropdowns();
     updateDashboard();
+    
+    // Check for backup reminder
+    checkBackupReminder();
 });
