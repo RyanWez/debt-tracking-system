@@ -175,7 +175,7 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 **Ryan Wez**
 
 - GitHub: [@RyanWez](https://github.com/RyanWez)
-- Website: [ryanwez.github.io/debt-tracking-system](https://ryanwez.github.io/debt-tracking-system)
+- Website: [Debt Tracker](https://debt-tracker-mm.com)
 
 ---
 
